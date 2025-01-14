@@ -1,6 +1,9 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using RecordStore.Core.Models;
+using System.IO;
+using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace RecordStore.Infrastructure.Persistence
 {
@@ -45,34 +48,35 @@ namespace RecordStore.Infrastructure.Persistence
             });
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        internal void Seed()
         {
             var serializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            string basePath = "../RecordStore.Infrastructure/Resources";
 
-            var artistsJson = File.ReadAllText("Resources/ArtistSeedData.json");
+            var artistsJson = File.ReadAllText(Path.Combine(basePath, "ArtistSeedData.json"));
             var artists = JsonSerializer.Deserialize<List<Artist>>(artistsJson, serializerOptions);
+            if (artists == null || !artists.Any())
+            {
+                throw new Exception("Artists data is null or empty.");
+            }
 
-            var genresJson = File.ReadAllText("Resources/GenreSeedData.json");
+            var genresJson = File.ReadAllText(Path.Combine(basePath, "GenreSeedData.json"));
             var genres = JsonSerializer.Deserialize<List<Genre>>(genresJson, serializerOptions);
+            if (genres == null || !genres.Any())
+            {
+                throw new Exception("Genres data is null or empty.");
+            }
 
-            var albumsJson = File.ReadAllText("Resources/AlbumSeedData.json");
+            var albumsJson = File.ReadAllText(Path.Combine(basePath, "AlbumSeedData.json"));
             var albums = JsonSerializer.Deserialize<List<Album>>(albumsJson, serializerOptions);
+            if (albums == null || !albums.Any())
+            {
+                throw new Exception("Albums data is null or empty.");
+            }
 
-            optionsBuilder
-                .UseSeeding((context, _) =>
-                {
-                    context.Set<Artist>().AddRangeAsync(artists);
-                    context.Set<Genre>().AddRangeAsync(genres);
-                    context.Set<Album>().AddRangeAsync(albums);
-                    context.SaveChanges();
-                })
-                .UseAsyncSeeding(async (context, _, _) =>
-                {
-                    await context.Set<Artist>().AddRangeAsync(artists);
-                    await context.Set<Genre>().AddRangeAsync(genres);
-                    await context.Set<Album>().AddRangeAsync(albums);
-                    await context.SaveChangesAsync();
-                });
+            Genres.AddRange(genres);
+            Albums.AddRange(albums);
+            Artists.AddRange(artists);
         }
     }
 }

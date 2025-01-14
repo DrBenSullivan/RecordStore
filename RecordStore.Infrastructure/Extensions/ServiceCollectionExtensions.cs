@@ -13,6 +13,13 @@ namespace RecordStore.Infrastructure.Extensions
             if (environment.IsDevelopment())
             {
                 services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("RecordStore"));
+                using (var serviceProvider = services.BuildServiceProvider())
+                {
+                    var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+                    dbContext.Database.EnsureCreated();
+                    dbContext.Seed();
+                    dbContext.SaveChanges();
+                }
                 return services;
             }
 
