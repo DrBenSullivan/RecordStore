@@ -1,4 +1,6 @@
+using RecordStore.Application.Services;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
+using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Infrastructure.Extensions;
 using RecordStore.Infrastructure.Repositories;
 
@@ -15,6 +17,10 @@ namespace RecordStore.Api
             builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
             builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+
+            builder.Services.AddScoped<IAlbumService, AlbumService>();
+            builder.Services.AddScoped<IArtistService, ArtistService>();
+            builder.Services.AddScoped<IGenreService, GenreService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
