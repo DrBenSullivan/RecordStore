@@ -5,6 +5,10 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordStore.Api", "RecordStore\RecordStore.Api.csproj", "{A92AC18B-A3CD-454A-B4D7-ED3BA045A7FB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordStore.Core", "RecordStore.Core\RecordStore.Core.csproj", "{A6BC95FB-2A25-4BAD-880C-9B6381F921CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordStore.Infrastructure", "RecordStore.Application\RecordStore.Infrastructure.csproj", "{863FB45E-52D9-4822-AAE7-9FF5687F8D11}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{A92AC18B-A3CD-454A-B4D7-ED3BA045A7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A92AC18B-A3CD-454A-B4D7-ED3BA045A7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A92AC18B-A3CD-454A-B4D7-ED3BA045A7FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6BC95FB-2A25-4BAD-880C-9B6381F921CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6BC95FB-2A25-4BAD-880C-9B6381F921CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6BC95FB-2A25-4BAD-880C-9B6381F921CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6BC95FB-2A25-4BAD-880C-9B6381F921CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{863FB45E-52D9-4822-AAE7-9FF5687F8D11}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{863FB45E-52D9-4822-AAE7-9FF5687F8D11}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{863FB45E-52D9-4822-AAE7-9FF5687F8D11}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{863FB45E-52D9-4822-AAE7-9FF5687F8D11}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

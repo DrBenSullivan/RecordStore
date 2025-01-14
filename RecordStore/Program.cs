@@ -1,11 +1,14 @@
+using RecordStore.Infrastructure.Extensions;
 
-namespace RecordStore
+namespace RecordStore.Api
 {
     public class Program
     {
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDatabase(builder.Configuration, builder.Environment);
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
