@@ -13,14 +13,14 @@ namespace RecordStore.Application.Services
             _genreRepository = genreRepository;
         }
 
-        public Task<List<Genre>> FindAllGenresAsync()
+        public async Task<List<Genre>> FindAllGenresAsync()
         {
-            throw new NotImplementedException();
+            return await _genreRepository.FetchAllGenresAsync();
         }
 
-        public Task<Genre?> FindGenreByIdAsync(int id)
+        public async Task<Genre?> FindGenreByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _genreRepository.FetchGenreByIdAsync(id);
         }
     }
 }
