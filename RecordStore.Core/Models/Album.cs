@@ -9,7 +9,7 @@
         public int? GenreId { get; set; }
 
         // Navigation Properties
-        public required virtual Artist Artist { get; set; }
+        public virtual Artist Artist { get; set; }
         public virtual Genre? Genre { get; set; }
     }
 }
