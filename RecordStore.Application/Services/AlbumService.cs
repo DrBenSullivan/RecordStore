@@ -13,9 +13,9 @@ namespace RecordStore.Application.Services
             _albumRepository = albumRepository;
         }
 
-        public Task<Album?> AddAlbum(Album album)
+        public async Task<Album?> AddAlbum(Album album)
         {
-            throw new NotImplementedException();
+            return await _albumRepository.AddAlbum(album);
         }
 
         public async Task<Album?> FindAlbumByIdAsync(int id)

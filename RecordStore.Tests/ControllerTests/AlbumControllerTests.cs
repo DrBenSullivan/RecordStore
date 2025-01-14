@@ -43,9 +43,9 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var expected = new List<Album>()
             {
-                new() { Id = 1, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow, Title = "TestAlbum1" },
-                new() { Id = 2, ArtistId = 2, GenreId = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1), Title = "TestAlbum2" },
-                new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2), Title = "TestAlbum3" },
+                new() { Id = 1, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" },
+                new() { Id = 2, ArtistId = 2, GenreId = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2" },
+                new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3" },
 
             };
             _albumService.Setup(s => s.FindAllAlbumsAsync()).ReturnsAsync(expected);
@@ -85,7 +85,7 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            var testAlbum = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow, Title = "TestAlbum1" };
+            var testAlbum = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
             _albumService.Setup(s => s.FindAlbumByIdAsync(testId)).ReturnsAsync(testAlbum);
 
             // Act
