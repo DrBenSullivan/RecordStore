@@ -17,13 +17,19 @@ namespace RecordStore.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllAlbums()
         {
-            throw new NotImplementedException();
+            var result = await _albumService.FindAllAlbumsAsync();
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetAlbumById(int id)
         {
-            throw new NotImplementedException();
+            var result = await _albumService.FindAlbumByIdAsync(id);
+
+            if (result == null) return NotFound($"The album with id '{id}' could not be found.");
+
+            return Ok(result);
         }
     }
 }
