@@ -24,7 +24,15 @@ namespace RecordStore.Infrastructure.Repositories
 
         public async Task<Album?> FetchAlbumByIdAsync(int id)
         {
-            return await _db.Albums.FindAsync(id);
+            return await _db.Albums
+                .FindAsync(id);
+        }
+
+        public async Task<Album?> AddAlbum(Album album)
+        {
+            _db.Albums.Add(album);
+            await _db.SaveChangesAsync();
+            return album;
         }
     }
 }

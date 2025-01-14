@@ -1,7 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using RecordStore.Core.Models;
 
-namespace RecordStore.Application.Dtos
+namespace RecordStore.Shared.Dtos
 {
     public class CreateAlbumDto
     {

@@ -13,6 +13,11 @@ namespace RecordStore.Application.Services
             _albumRepository = albumRepository;
         }
 
+        public Task<Album?> AddAlbum(Album album)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<Album?> FindAlbumByIdAsync(int id)
         {
             return await _albumRepository.FetchAlbumByIdAsync(id);

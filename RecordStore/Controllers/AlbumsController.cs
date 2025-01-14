@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecordStore.Api.Dtos;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 
 namespace RecordStore.Api.Controllers
@@ -30,6 +31,12 @@ namespace RecordStore.Api.Controllers
             if (result == null) return NotFound($"The album with id '{id}' could not be found.");
 
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAlbum(PostAlbumDto dto)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordStore.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordStore.Application", "RecordStore.Application\RecordStore.Application.csproj", "{C27FC752-4414-421C-A415-DA7F1CEB52F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordStore.Tests", "RecordStore.Tests\RecordStore.Tests.csproj", "{7B216DE3-8E3B-4FE5-93D1-2F5CF55E1823}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordStore.Tests", "RecordStore.Tests\RecordStore.Tests.csproj", "{7B216DE3-8E3B-4FE5-93D1-2F5CF55E1823}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
