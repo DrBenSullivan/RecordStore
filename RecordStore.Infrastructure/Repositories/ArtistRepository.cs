@@ -3,7 +3,7 @@ using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Models;
 using RecordStore.Infrastructure.Persistence;
 
-namespace RecordStore.Application.Repositories
+namespace RecordStore.Infrastructure.Repositories
 {
     public class ArtistRepository : IArtistRepository
     {

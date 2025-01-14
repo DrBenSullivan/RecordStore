@@ -1,6 +1,6 @@
-using RecordStore.Application.Repositories;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Infrastructure.Extensions;
+using RecordStore.Infrastructure.Repositories;
 
 namespace RecordStore.Api
 {

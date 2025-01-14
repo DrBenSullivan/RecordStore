@@ -47,11 +47,11 @@ namespace RecordStore.Infrastructure.Persistence
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var serializerOptions = new JsonSerializerOptions{ PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+            var serializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
             var artistsJson = File.ReadAllText("Resources/ArtistSeedData.json");
             var artists = JsonSerializer.Deserialize<List<Artist>>(artistsJson, serializerOptions);
-            
+
             var genresJson = File.ReadAllText("Resources/GenreSeedData.json");
             var genres = JsonSerializer.Deserialize<List<Genre>>(genresJson, serializerOptions);
 
