@@ -15,13 +15,13 @@ namespace RecordStore.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllAlbums()
+        public async Task<IActionResult> GetAllAlbums()
         {
             throw new NotImplementedException();
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetAlbumById(int id)
+        public async Task<IActionResult> GetAlbumById(int id)
         {
             throw new NotImplementedException();
         }

@@ -15,13 +15,13 @@ namespace RecordStore.Api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAllGenres()
+        public async Task<IActionResult> GetAllGenres()
         {
             throw new NotImplementedException();
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetGenreById(int id)
+        public async Task<IActionResult> GetGenreById(int id)
         {
             throw new NotImplementedException();
         }
