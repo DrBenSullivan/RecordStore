@@ -13,14 +13,14 @@ namespace RecordStore.Application.Services
             _artistRepository = artistRepository;
         }
 
-        public Task<List<Artist>> FindAllArtistsAsync()
+        public async Task<List<Artist>> FindAllArtistsAsync()
         {
-            throw new NotImplementedException();
+            return await _artistRepository.FetchAllArtistsAsync();
         }
 
-        public Task<Artist?> FindArtistByIdAsync(int id)
+        public async Task<Artist?> FindArtistByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            return await _artistRepository.FetchArtistByIdAsync(id);
         }
     }
 }
