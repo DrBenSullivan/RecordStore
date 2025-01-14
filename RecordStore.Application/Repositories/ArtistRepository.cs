@@ -14,12 +14,12 @@ namespace RecordStore.Application.Repositories
             _db = context;
         }
 
-        public async Task<List<Artist>> FetchAllArtists()
+        public async Task<List<Artist>> FetchAllArtistsAsync()
         {
             return await _db.Artists.ToListAsync();
         }
 
-        public async Task<Artist?> FetchArtistById(int id)
+        public async Task<Artist?> FetchArtistByIdAsync(int id)
         {
             return await _db.Artists.FindAsync(id);
         }

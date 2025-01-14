@@ -4,7 +4,7 @@ namespace RecordStore.Core.Interfaces.RepositoryInterfaces
 {
     public interface IArtistRepository
     {
-        public Task<List<Artist>> FetchAllArtists();
-        public Task<Artist?> FetchArtistById(int id);
+        public Task<List<Artist>> FetchAllArtistsAsync();
+        public Task<Artist?> FetchArtistByIdAsync(int id);
     }
 }
