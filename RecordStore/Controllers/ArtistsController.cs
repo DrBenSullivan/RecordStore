@@ -17,13 +17,19 @@ namespace RecordStore.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllArtists()
         {
-            throw new NotImplementedException();
+            var result = await _artistService.FindAllArtistsAsync();
+
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetArtistById(int id)
         {
-            throw new NotImplementedException();
+            var result = await _artistService.FindArtistByIdAsync(id);
+
+            if (result == null) return NotFound($"The artist with id '{id}' could not be found.");
+
+            return Ok(result);
         }
     }
 }

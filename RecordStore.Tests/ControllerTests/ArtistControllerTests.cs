@@ -32,8 +32,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Album>>();
-            var result = okObjectResult?.Value as List<Album>;
+            okObjectResult?.Value.Should().BeOfType<List<Artist>>();
+            var result = okObjectResult?.Value as List<Artist>;
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -56,8 +56,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Album>>();
-            var result = okObjectResult?.Value as List<Album>;
+            okObjectResult?.Value.Should().BeOfType<List<Artist>>();
+            var result = okObjectResult?.Value as List<Artist>;
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -94,8 +94,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var notFoundObjectResult = actual as OkObjectResult;
-            notFoundObjectResult?.Value.Should().BeOfType<Album>();
-            var result = notFoundObjectResult?.Value as Album;
+            notFoundObjectResult?.Value.Should().BeOfType<Artist>();
+            var result = notFoundObjectResult?.Value as Artist;
             result.Should().BeEquivalentTo(testArtist);
         }
     }
