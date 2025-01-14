@@ -10,5 +10,6 @@ namespace RecordStore.Core.Models
         [Required]
         [MaxLength(255)]
         public string Name { get; set; } = string.Empty;
+        public virtual List<Album> Albums { get; set; } = [];
     }
 }
