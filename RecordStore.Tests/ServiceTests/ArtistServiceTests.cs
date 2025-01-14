@@ -7,7 +7,7 @@ using RecordStore.Core.Models;
 
 namespace RecordStore.Tests.ServiceTests
 {
-    public class ArtistServiceTests
+    public class ArtistSericeTests
     {
         private Mock<IArtistRepository> _artistRepositoryMock;
         private IArtistService _artistService;
