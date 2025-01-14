@@ -16,7 +16,10 @@ namespace RecordStore.Infrastructure.Repositories
 
         public async Task<List<Album>> FetchAllAlbumsAsync()
         {
-            return await _db.Albums.ToListAsync();
+            return await _db.Albums
+                .Include(a => a.Genre)
+                .Include(a => a.Artist)
+                .ToListAsync();
         }
 
         public async Task<Album?> FetchAlbumByIdAsync(int id)

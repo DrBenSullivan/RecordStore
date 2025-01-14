@@ -1,9 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using RecordStore.Core.Models;
-using System.IO;
-using System.Linq;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace RecordStore.Infrastructure.Persistence
 {
@@ -28,7 +25,7 @@ namespace RecordStore.Infrastructure.Persistence
                 entity.Property(a => a.Title).IsRequired().HasMaxLength(255);
                 entity.Property(a => a.ReleaseYear).IsRequired();
                 entity.Property(a => a.ArtistId).IsRequired();
-                entity.HasOne(a => a.Artist).WithMany(ar => ar.Albums).HasForeignKey(a => a.ArtistId).OnDelete(DeleteBehavior.Cascade);
+                entity.HasOne(a => a.Artist).WithMany().HasForeignKey(a => a.ArtistId).OnDelete(DeleteBehavior.Cascade);
                 entity.Property(a => a.GenreId).IsRequired(false);
                 entity.HasOne(a => a.Genre).WithMany().HasForeignKey(a => a.GenreId).OnDelete(DeleteBehavior.SetNull);
             });
