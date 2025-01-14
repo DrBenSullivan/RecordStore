@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace RecordStore.Core.Models
+﻿namespace RecordStore.Core.Models
 {
     public class Album
     {

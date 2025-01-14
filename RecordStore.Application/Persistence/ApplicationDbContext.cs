@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RecordStore.Core.Models;
 
-namespace RecordStore.Application.Persistence
+namespace RecordStore.Infrastructure.Persistence
 {
     public class ApplicationDbContext : DbContext
     {
@@ -24,7 +24,7 @@ namespace RecordStore.Application.Persistence
                 entity.Property(a => a.Title).IsRequired().HasMaxLength(255);
                 entity.Property(a => a.ReleaseYear).IsRequired();
                 entity.Property(a => a.ArtistId).IsRequired();
-                entity.HasOne(a => a.Artist).WithMany(ar => ar.Albums).HasForeignKey(a => a.ArtistId).OnDelete(DeleteBehavior.Cascade); 
+                entity.HasOne(a => a.Artist).WithMany(ar => ar.Albums).HasForeignKey(a => a.ArtistId).OnDelete(DeleteBehavior.Cascade);
                 entity.Property(a => a.GenreId).IsRequired(false);
                 entity.HasOne(a => a.Genre).WithMany().HasForeignKey(a => a.GenreId).OnDelete(DeleteBehavior.SetNull);
             });

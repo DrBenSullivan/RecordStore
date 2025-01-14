@@ -21,4 +21,8 @@
     <ProjectReference Include="..\RecordStore.Core\RecordStore.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
 </Project>

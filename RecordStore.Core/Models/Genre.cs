@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace RecordStore.Core.Models
+﻿namespace RecordStore.Core.Models
 {
     public class Genre
     {
