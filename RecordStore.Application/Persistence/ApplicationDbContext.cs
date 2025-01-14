@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore;
 using RecordStore.Core.Models;
 
 namespace RecordStore.Infrastructure.Persistence
@@ -42,6 +43,36 @@ namespace RecordStore.Infrastructure.Persistence
                 entity.HasKey(a => a.Id);
                 entity.Property(a => a.Name).IsRequired().HasMaxLength(255);
             });
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            var serializerOptions = new JsonSerializerOptions{ PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+            var artistsJson = File.ReadAllText("Resources/ArtistSeedData.json");
+            var artists = JsonSerializer.Deserialize<List<Artist>>(artistsJson, serializerOptions);
+            
+            var genresJson = File.ReadAllText("Resources/GenreSeedData.json");
+            var genres = JsonSerializer.Deserialize<List<Genre>>(genresJson, serializerOptions);
+
+            var albumsJson = File.ReadAllText("Resources/AlbumSeedData.json");
+            var albums = JsonSerializer.Deserialize<List<Album>>(albumsJson, serializerOptions);
+
+            optionsBuilder
+                .UseSeeding((context, _) =>
+                {
+                    context.Set<Artist>().AddRangeAsync(artists);
+                    context.Set<Genre>().AddRangeAsync(genres);
+                    context.Set<Album>().AddRangeAsync(albums);
+                    context.SaveChanges();
+                })
+                .UseAsyncSeeding(async (context, _, _) =>
+                {
+                    await context.Set<Artist>().AddRangeAsync(artists);
+                    await context.Set<Genre>().AddRangeAsync(genres);
+                    await context.Set<Album>().AddRangeAsync(albums);
+                    await context.SaveChangesAsync();
+                });
         }
     }
 }

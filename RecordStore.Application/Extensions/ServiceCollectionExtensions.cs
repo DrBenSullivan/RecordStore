@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using RecordStore.Infrastructure.Persistence;
 
 namespace RecordStore.Infrastructure.Extensions
 {
