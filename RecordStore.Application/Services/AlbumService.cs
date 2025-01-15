@@ -60,5 +60,10 @@ namespace RecordStore.Application.Services
         {
             return await _albumRepository.RemoveAlbumByIdAsync(albumId);
         }
+
+        public async Task<List<AlbumResponseDto>> FindAllAlbumsInStockAsync()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

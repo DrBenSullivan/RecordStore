@@ -11,21 +11,21 @@ namespace RecordStore.Tests.ControllerTests
 {
     public class AlbumsControllerTests
     {
-        private Mock<IAlbumService> _albumService;
+        private Mock<IAlbumService> _mockAlbumService;
         private AlbumsController _albumController;
 
         [SetUp]
         public void SetUp()
         {
-            _albumService = new Mock<IAlbumService>();
-            _albumController = new AlbumsController(_albumService.Object);
+            _mockAlbumService = new Mock<IAlbumService>();
+            _albumController = new AlbumsController(_mockAlbumService.Object);
         }
 
         [Test]
         public async Task GetAllAlbums_NoAlbums_ReturnsOkEmptyList()
         {
             // Arrange
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.FindAllAlbumsAsync())
                 .ReturnsAsync(() => []);
 
@@ -53,7 +53,7 @@ namespace RecordStore.Tests.ControllerTests
 
             var expected = existingAlbums.Select(a => a.ToAlbumResponseDto()).ToList();
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.FindAllAlbumsAsync())
                 .ReturnsAsync(expected);
 
@@ -69,13 +69,35 @@ namespace RecordStore.Tests.ControllerTests
         }
 
         [Test]
+        public async Task GetAllAlbums_InStockOnly_CallsExpectedMethod()
+        {
+            // Act
+            await _albumController.GetAllAlbums(true);
+
+            // Assert
+            _mockAlbumService.Verify(s => s.FindAllAlbumsAsync(), Times.Never);
+            _mockAlbumService.Verify(s => s.FindAllAlbumsInStockAsync(), Times.Once);
+        }
+
+        [Test]
+        public async Task GetAllAlbums_NoFilter_CallsExpectedMethod()
+        {
+            // Act
+            await _albumController.GetAllAlbums();
+
+            // Assert
+            _mockAlbumService.Verify(s => s.FindAllAlbumsAsync(), Times.Once);
+            _mockAlbumService.Verify(s => s.FindAllAlbumsInStockAsync(), Times.Never);
+        }
+
+        [Test]
         public async Task GetAlbumById_DoesNotExist_ReturnsNotFound()
         {
             // Arrange
             var testId = 1;
             var expectedErrorMessage = $"The album with id '{testId}' could not be found.";
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.FindAlbumByIdAsync(testId))
                 .ReturnsAsync((int _) => null);
 
@@ -97,7 +119,7 @@ namespace RecordStore.Tests.ControllerTests
             var testAlbum = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1", Artist = new() { Name = "TestArtist1" } };
             var expected = testAlbum.ToAlbumResponseDto();
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.FindAlbumByIdAsync(testId))
                 .ReturnsAsync(expected);
 
@@ -123,7 +145,7 @@ namespace RecordStore.Tests.ControllerTests
             testAlbum.Artist = new() { Name = "TestArtist1" };
             var expected = testAlbum.ToAlbumResponseDto();
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))
                 .ReturnsAsync(expected);
 
@@ -145,7 +167,7 @@ namespace RecordStore.Tests.ControllerTests
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
             var expectedErrorMessage = $"Unable to add album. An Album with Title '{testAlbumDto.Title}', Artist Id '{testAlbumDto.ArtistId}' and Release Year '{testAlbumDto.ReleaseYear}' already exists.";
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))
                 .ReturnsAsync((PostAlbumDto _) => null);
 
@@ -185,7 +207,7 @@ namespace RecordStore.Tests.ControllerTests
             var expectedErrorMessage = $"Unable to update album. No Album with id '{testId}' exists.";
             var testAlbumDto = new PutAlbumDto { Title = "TestAlbum1" };
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.UpdateAlbumAsync(testId, testAlbumDto))
                 .ReturnsAsync((int _, PutAlbumDto _) => null);
 
@@ -209,7 +231,7 @@ namespace RecordStore.Tests.ControllerTests
             var expected = existingAlbum.ToAlbumResponseDto();
             expected.AlbumId = testId;
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.UpdateAlbumAsync(testId, testAlbumDto))
                 .ReturnsAsync(expected);
 
@@ -231,7 +253,7 @@ namespace RecordStore.Tests.ControllerTests
             var testId = 1;
             var expectedErrorMessage = $"Unable to delete album. No Album with id '{testId}' exists.";
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.RemoveAlbumByIdAsync(testId))
                 .ReturnsAsync(-1);
 
@@ -251,7 +273,7 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
 
-            _albumService
+            _mockAlbumService
                 .Setup(s => s.RemoveAlbumByIdAsync(testId))
                 .ReturnsAsync(1);
 
