@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using RecordStore.Api.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Shared.Dtos;
 
@@ -46,7 +47,13 @@ namespace RecordStore.Api.Controllers
         [HttpPut("{albumId}")]
         public async Task<IActionResult> PutAlbum(int albumId, PutAlbumDto dto)
         {
-            throw new NotImplementedException();
+            if (dto.HasNoProperties()) return BadRequest("Unable to update album. No new property values were provided.");
+
+            var result = await _albumService.UpdateAlbumAsync(albumId, dto);
+
+            if (result == null) return NotFound($"Unable to update album. No Album with id '{albumId}' exists.");
+
+            return Ok(result);
         }
     }
 }

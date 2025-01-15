@@ -160,11 +160,29 @@ namespace RecordStore.Tests.ControllerTests
         }
 
         [Test]
+        public async Task PutAlbum_NoPropertiesOnDto_ReturnsBadRequest()
+        {
+            // Arrange
+            var testId = 1;
+            var testAlbumDto = new PutAlbumDto();
+            var expectedErrorMessage = "Unable to update album. No new property values were provided.";
+
+            // Act
+            var actual = await _albumController.PutAlbum(testId, testAlbumDto);
+
+            // Assert
+            actual.Should().BeOfType<BadRequestObjectResult>();
+            var badRequestObjectResult = actual as BadRequestObjectResult;
+            var result = badRequestObjectResult?.Value as string;
+            result.Should().Be(expectedErrorMessage);
+        }
+
+        [Test]
         public async Task PutAlbum_AlbumDoesNotExist_ReturnsNotFound()
         {
             // Arrange
             var testId = 1;
-            var expectedErrorMessage= $"Unable to update album. No Album with id '{testId}' exists.";
+            var expectedErrorMessage = $"Unable to update album. No Album with id '{testId}' exists.";
             var testAlbumDto = new PutAlbumDto { Title = "TestAlbum1" };
 
             _albumService
