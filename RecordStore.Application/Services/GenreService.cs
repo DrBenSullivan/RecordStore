@@ -1,6 +1,8 @@
-﻿using RecordStore.Core.Interfaces.RepositoryInterfaces;
+﻿using RecordStore.Application.Extensions;
+using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos.GenreDtos;
 
 namespace RecordStore.Application.Services
 {
@@ -13,14 +15,20 @@ namespace RecordStore.Application.Services
             _genreRepository = genreRepository;
         }
 
-        public async Task<List<Genre>> FindAllGenresAsync()
+        public async Task<List<GenreResponseDto>> FindAllGenresAsync()
         {
-            return await _genreRepository.FetchAllGenresAsync();
+            var genres = await _genreRepository.FetchAllGenresAsync();
+
+            return genres.Select(g => g.ToGenreResponseDto()).ToList();
         }
 
-        public async Task<Genre?> FindGenreByIdAsync(int id)
+        public async Task<GenreResponseDto?> FindGenreByIdAsync(int id)
         {
-            return await _genreRepository.FetchGenreByIdAsync(id);
+            var genre = await _genreRepository.FetchGenreByIdAsync(id);
+
+            if (genre == null) return null;
+
+            return genre.ToGenreResponseDto();
         }
     }
 }

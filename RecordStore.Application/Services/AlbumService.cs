@@ -2,7 +2,7 @@
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
-using RecordStore.Shared.Dtos;
+using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Application.Services
 {
@@ -15,31 +15,46 @@ namespace RecordStore.Application.Services
             _albumRepository = albumRepository;
         }
 
-        public async Task<Album?> AddAlbumAsync(PostAlbumDto dto)
+        public async Task<AlbumResponseDto?> AddAlbumAsync(PostAlbumDto postAlbumDto)
         {
-            var album = dto.ToAlbum();
-            return await _albumRepository.AddAlbumAsync(album);
+            var album = postAlbumDto.ToAlbum();
+            
+            var result = await _albumRepository.AddAlbumAsync(album);
+
+            if (result == null) return null;
+
+            return result.ToAlbumResponseDto();
         }
 
-        public async Task<Album?> FindAlbumByIdAsync(int id)
+        public async Task<AlbumResponseDto?> FindAlbumByIdAsync(int id)
         {
-            return await _albumRepository.FetchAlbumByIdAsync(id);
+            var album = await _albumRepository.FetchAlbumByIdAsync(id);
+
+            if (album == null) return null;
+
+            return album.ToAlbumResponseDto();
         }
 
-        public async Task<List<Album>> FindAllAlbumsAsync()
+        public async Task<List<AlbumResponseDto>> FindAllAlbumsAsync()
         {
-            return await _albumRepository.FetchAllAlbumsAsync();
+            var albums = await _albumRepository.FetchAllAlbumsAsync();
+
+            return albums.Select(a => a.ToAlbumResponseDto()).ToList();
         }
 
-        public async Task<Album?> UpdateAlbumAsync(int albumId, PutAlbumDto dto)
+        public async Task<AlbumResponseDto?> UpdateAlbumAsync(int albumId, PutAlbumDto dto)
         {
-            var existingAlbum = await FindAlbumByIdAsync(albumId);
+            var existingAlbum = await _albumRepository.FetchAlbumByIdAsync(albumId);
 
             if (existingAlbum == null) return null;
 
             var updatedAlbum = dto.ToUpdatedAlbum(existingAlbum);
 
-            return await _albumRepository.UpdateAlbumAsync(updatedAlbum);
+            var result = await _albumRepository.UpdateAlbumAsync(updatedAlbum);
+
+            if (result == null) return null;
+
+            return result.ToAlbumResponseDto();
         }
 
         public async Task<int> RemoveAlbumByIdAsync(int albumId)

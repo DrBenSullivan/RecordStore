@@ -1,4 +1,4 @@
-﻿using RecordStore.Shared.Dtos;
+﻿using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Api.Extensions
 {

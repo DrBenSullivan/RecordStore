@@ -22,14 +22,20 @@ namespace RecordStore.Api.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetArtistById(int id)
+        [HttpGet("{artistId}")]
+        public async Task<IActionResult> GetArtistById(int artistId)
         {
-            var result = await _artistService.FindArtistByIdAsync(id);
+            var result = await _artistService.FindArtistByIdAsync(artistId);
 
-            if (result == null) return NotFound($"The artist with id '{id}' could not be found.");
+            if (result == null) return NotFound($"The Artist with Id '{artistId}' could not be found.");
 
             return Ok(result);
+        }
+
+        [HttpGet("{artistId}/albums")]
+        public async Task<IActionResult> GetAlbumsByArtist(int artistId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

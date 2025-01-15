@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using RecordStore.Application.Extensions;
 using RecordStore.Application.Services;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
@@ -38,16 +39,18 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindAllArtistsAsync_Artists_ReturnsExpectedList()
         {
             // Arrange
-            var expected = new List<Artist>()
+            var existingArtists = new List<Artist>()
             {
                 new() { Id = 1, Name = "TestArtist1" },
                 new() { Id = 2, Name = "TestArtist2" },
                 new() { Id = 3, Name = "TestArtist3" }
             };
 
+            var expected = existingArtists.Select(a => a.ToArtistResponseDto()).ToList();
+
             _artistRepositoryMock
                 .Setup(r => r.FetchAllArtistsAsync())
-                .ReturnsAsync(expected);
+                .ReturnsAsync(existingArtists);
 
             // Act
             var actual = await _artistService.FindAllArtistsAsync();
@@ -78,11 +81,12 @@ namespace RecordStore.Tests.ServiceTests
         {
             // Arrange
             int testId = 1;
-            var expected = new Artist { Id = testId, Name = "TestArtist1" };
+            var existingArtist = new Artist { Id = testId, Name = "TestArtist1" };
+            var expected = existingArtist.ToArtistResponseDto();
 
             _artistRepositoryMock
                 .Setup(r => r.FetchArtistByIdAsync(testId))
-                .ReturnsAsync(expected);
+                .ReturnsAsync(existingArtist);
 
             // Act
             var actual = await _artistService.FindArtistByIdAsync(testId);

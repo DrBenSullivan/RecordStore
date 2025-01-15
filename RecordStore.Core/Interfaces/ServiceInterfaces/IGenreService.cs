@@ -1,10 +1,10 @@
-﻿using RecordStore.Core.Models;
+﻿using RecordStore.Shared.Dtos.GenreDtos;
 
 namespace RecordStore.Core.Interfaces.ServiceInterfaces
 {
     public interface IGenreService
     {
-        public Task<Genre?> FindGenreByIdAsync(int id);
-        public Task<List<Genre>> FindAllGenresAsync();
+        public Task<GenreResponseDto?> FindGenreByIdAsync(int id);
+        public Task<List<GenreResponseDto>> FindAllGenresAsync();
     }
 }

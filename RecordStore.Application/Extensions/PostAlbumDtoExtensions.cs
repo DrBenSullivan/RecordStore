@@ -1,5 +1,5 @@
 ﻿using RecordStore.Core.Models;
-using RecordStore.Shared.Dtos;
+using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Application.Extensions
 {

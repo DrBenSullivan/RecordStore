@@ -1,5 +1,6 @@
 using FluentAssertions;
 using Moq;
+using RecordStore.Application.Extensions;
 using RecordStore.Application.Services;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
@@ -38,16 +39,17 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindAllGenresAsync_Genres_ReturnsExpectedList()
         {
             // Arrange
-            var expected = new List<Genre>()
+            var existingGenres = new List<Genre>()
             {
                 new() { Id = 1, Name = "TestGenre1" },
                 new() { Id = 2, Name = "TestGenre2" },
                 new() { Id = 3, Name = "TestGenre3" }
             };
+            var expected = existingGenres.Select(g => g.ToGenreResponseDto()).ToList();
 
             _genreRepositoryMock
                 .Setup(r => r.FetchAllGenresAsync())
-                .ReturnsAsync(expected);
+                .ReturnsAsync(existingGenres);
 
             // Act
             var actual = await _genreService.FindAllGenresAsync();
@@ -78,11 +80,12 @@ namespace RecordStore.Tests.ServiceTests
         {
             // Arrange
             int testId = 1;
-            var expected = new Genre { Id = testId, Name = "TestGenre1" };
+            var existingGenre = new Genre { Id = testId, Name = "TestGenre1" };
+            var expected = existingGenre.ToGenreResponseDto();
 
             _genreRepositoryMock
                 .Setup(r => r.FetchGenreByIdAsync(testId))
-                .ReturnsAsync(expected);
+                .ReturnsAsync(existingGenre);
 
             // Act
             var actual = await _genreService.FindGenreByIdAsync(testId);

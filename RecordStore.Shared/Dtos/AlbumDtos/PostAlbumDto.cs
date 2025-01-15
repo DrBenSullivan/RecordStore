@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace RecordStore.Shared.Dtos
+namespace RecordStore.Shared.Dtos.AlbumDtos
 {
     public class PostAlbumDto
     {

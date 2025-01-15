@@ -1,6 +1,8 @@
-﻿using RecordStore.Core.Interfaces.RepositoryInterfaces;
+﻿using RecordStore.Application.Extensions;
+using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos.ArtistDtos;
 
 namespace RecordStore.Application.Services
 {
@@ -13,14 +15,25 @@ namespace RecordStore.Application.Services
             _artistRepository = artistRepository;
         }
 
-        public async Task<List<Artist>> FindAllArtistsAsync()
+        public async Task<List<ArtistResponseDto>> FindAllArtistsAsync()
         {
-            return await _artistRepository.FetchAllArtistsAsync();
+            var artists = await _artistRepository.FetchAllArtistsAsync();
+
+            return artists.Select(a => a.ToArtistResponseDto()).ToList();
         }
 
-        public async Task<Artist?> FindArtistByIdAsync(int id)
+        public async Task<ArtistResponseDto?> FindArtistByIdAsync(int artistId)
         {
-            return await _artistRepository.FetchArtistByIdAsync(id);
+            var artist = await _artistRepository.FetchArtistByIdAsync(artistId);
+
+            if (artist == null) return null;
+
+            return artist.ToArtistResponseDto();
+        }
+
+        public async Task<List<ArtistAlbumsResponseDto>> FindAlbumsByArtistIdAsync(int artistId)
+        {
+            throw new NotImplementedException();
         }
     }
 }

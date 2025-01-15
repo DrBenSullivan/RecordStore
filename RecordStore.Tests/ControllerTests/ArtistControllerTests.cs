@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecordStore.Api.Controllers;
+using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos.ArtistDtos;
 
 namespace RecordStore.Tests.ControllerTests
 {
@@ -33,8 +35,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Artist>>();
-            var result = okObjectResult?.Value as List<Artist>;
+            okObjectResult?.Value.Should().BeOfType<List<ArtistResponseDto>>();
+            var result = okObjectResult?.Value as List<ArtistResponseDto>;
             result.Should().BeEmpty();
         }
 
@@ -42,13 +44,14 @@ namespace RecordStore.Tests.ControllerTests
         public async Task GetAllArtists_Artists_ReturnsOkExpectedList()
         {
             // Arrange
-            var expected = new List<Artist>()
+            var existingArtists = new List<Artist>()
             {
                 new() { Id = 1, Name = "TestArtist1" },
                 new() { Id = 2, Name = "TestArtist2" },
                 new() { Id = 3, Name = "TestArtist3" }
-
             };
+
+            var expected = existingArtists.Select(a => a.ToArtistResponseDto()).ToList();
 
             _artistService
                 .Setup(s => s.FindAllArtistsAsync())
@@ -60,8 +63,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Artist>>();
-            var result = okObjectResult?.Value as List<Artist>;
+            okObjectResult?.Value.Should().BeOfType<List<ArtistResponseDto>>();
+            var result = okObjectResult?.Value as List<ArtistResponseDto>;
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -70,7 +73,7 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            var expectedErrorMessage = $"The artist with id '{testId}' could not be found.";
+            var expectedErrorMessage = $"The Artist with Id '{testId}' could not be found.";
 
             _artistService
                 .Setup(s => s.FindArtistByIdAsync(testId))
@@ -91,11 +94,12 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            var testArtist = new Artist { Id = testId, Name = "TestArtist1" };
+            var existingArtist = new Artist { Id = testId, Name = "TestArtist1" };
+            var expected = existingArtist.ToArtistResponseDto();
 
             _artistService
                 .Setup(s => s.FindArtistByIdAsync(testId))
-                .ReturnsAsync(testArtist);
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _artistsController.GetArtistById(testId);
@@ -103,9 +107,9 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var notFoundObjectResult = actual as OkObjectResult;
-            notFoundObjectResult?.Value.Should().BeOfType<Artist>();
-            var result = notFoundObjectResult?.Value as Artist;
-            result.Should().BeEquivalentTo(testArtist);
+            notFoundObjectResult?.Value.Should().BeOfType<ArtistResponseDto>();
+            var result = notFoundObjectResult?.Value as ArtistResponseDto;
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }

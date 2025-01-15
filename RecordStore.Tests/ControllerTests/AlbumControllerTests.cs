@@ -5,7 +5,7 @@ using RecordStore.Api.Controllers;
 using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
-using RecordStore.Shared.Dtos;
+using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Tests.ControllerTests
 {
@@ -35,8 +35,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Album>>();
-            var result = okObjectResult?.Value as List<Album>;
+            okObjectResult?.Value.Should().BeOfType<List<AlbumResponseDto>>();
+            var result = okObjectResult?.Value as List<AlbumResponseDto>;
             result.Should().BeEmpty();
         }
 
@@ -44,13 +44,14 @@ namespace RecordStore.Tests.ControllerTests
         public async Task GetAllAlbums_Albums_ReturnsOkExpectedList()
         {
             // Arrange
-            var expected = new List<Album>()
+            var existingAlbums = new List<Album>()
             {
-                new() { Id = 1, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" },
-                new() { Id = 2, ArtistId = 2, GenreId = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2" },
-                new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3" },
-
+                new() { Id = 1, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1", Artist = new() { Name = "TestArtist1" } },
+                new() { Id = 2, ArtistId = 2, GenreId = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2", Artist = new() { Name = "TestArtist2" } },
+                new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3", Artist = new() { Name = "TestArtist3" } },
             };
+
+            var expected = existingAlbums.Select(a => a.ToAlbumResponseDto()).ToList();
 
             _albumService
                 .Setup(s => s.FindAllAlbumsAsync())
@@ -62,8 +63,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Album>>();
-            var result = okObjectResult?.Value as List<Album>;
+            okObjectResult?.Value.Should().BeOfType<List<AlbumResponseDto>>();
+            var result = okObjectResult?.Value as List<AlbumResponseDto>;
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -93,11 +94,12 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            var testAlbum = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
+            var testAlbum = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1", Artist = new() { Name = "TestArtist1" } };
+            var expected = testAlbum.ToAlbumResponseDto();
 
             _albumService
                 .Setup(s => s.FindAlbumByIdAsync(testId))
-                .ReturnsAsync(testAlbum);
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _albumController.GetAlbumById(testId);
@@ -105,9 +107,9 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var notFoundObjectResult = actual as OkObjectResult;
-            notFoundObjectResult?.Value.Should().BeOfType<Album>();
-            var result = notFoundObjectResult?.Value as Album;
-            result.Should().BeEquivalentTo(testAlbum);
+            notFoundObjectResult?.Value.Should().BeOfType<AlbumResponseDto>();
+            var result = notFoundObjectResult?.Value as AlbumResponseDto;
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Test]
@@ -116,16 +118,14 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId.Value, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear.Value, Title = testAlbumDto.Title };
+            var testAlbum = testAlbumDto.ToAlbum();
+            testAlbum.ArtistId = testId;
+            testAlbum.Artist = new() { Name = "TestArtist1" };
+            var expected = testAlbum.ToAlbumResponseDto();
 
             _albumService
                 .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))
-                .ReturnsAsync((PostAlbumDto d) =>
-                {
-                    var album = d.ToAlbum();
-                    album.Id = testId;
-                    return album;
-                });
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _albumController.PostAlbum(testAlbumDto);
@@ -133,8 +133,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<CreatedAtActionResult>();
             var createdAtActionResult = actual as CreatedAtActionResult;
-            createdAtActionResult?.Value.Should().BeOfType<Album>();
-            var result = createdAtActionResult?.Value as Album;
+            createdAtActionResult?.Value.Should().BeOfType<AlbumResponseDto>();
+            var result = createdAtActionResult?.Value as AlbumResponseDto;
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -205,15 +205,13 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testAlbumDto = new PutAlbumDto { Title = "newTestAlbum1" };
-            var existingAlbum = new Album { Id = testId, Title = "TestAlbum1", ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year };
+            var existingAlbum = new Album { Id = testId, Title = "TestAlbum1", ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Artist = new() { Name = "TestArtist1" } };
+            var expected = existingAlbum.ToAlbumResponseDto();
+            expected.AlbumId = testId;
 
             _albumService
                 .Setup(s => s.UpdateAlbumAsync(testId, testAlbumDto))
-                .ReturnsAsync((int id, PutAlbumDto dto) =>
-                {
-                    var updatedAlbum = dto.ToUpdatedAlbum(existingAlbum);
-                    return updatedAlbum;
-                });
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _albumController.PutAlbum(testId, testAlbumDto);
@@ -221,13 +219,9 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<Album>();
-            var result = okObjectResult?.Value as Album;
-            result?.Id.Should().Be(existingAlbum.Id);
-            result?.ArtistId.Should().Be(existingAlbum.ArtistId);
-            result?.GenreId.Should().Be(existingAlbum.GenreId);
-            result?.ReleaseYear.Should().Be(existingAlbum.ReleaseYear);
-            result?.Title.Should().Be(testAlbumDto.Title);
+            okObjectResult?.Value.Should().BeOfType<AlbumResponseDto>();
+            var result = okObjectResult?.Value as AlbumResponseDto;
+            result.Should().BeEquivalentTo(expected);
         }
 
         [Test]

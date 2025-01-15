@@ -1,14 +1,13 @@
-﻿using RecordStore.Core.Models;
-using RecordStore.Shared.Dtos;
+﻿using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Core.Interfaces.ServiceInterfaces
 {
     public interface IAlbumService
     {
-        Task<List<Album>> FindAllAlbumsAsync();
-        Task<Album?> FindAlbumByIdAsync(int id);
-        Task<Album?> AddAlbumAsync(PostAlbumDto dto);
-        Task<Album?> UpdateAlbumAsync(int albumId, PutAlbumDto dto);
+        Task<List<AlbumResponseDto>> FindAllAlbumsAsync();
+        Task<AlbumResponseDto?> FindAlbumByIdAsync(int id);
+        Task<AlbumResponseDto?> AddAlbumAsync(PostAlbumDto dto);
+        Task<AlbumResponseDto?> UpdateAlbumAsync(int albumId, PutAlbumDto dto);
         Task<int> RemoveAlbumByIdAsync(int albumId);
     }
 }

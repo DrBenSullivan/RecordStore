@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using RecordStore.Api.Extensions;
 using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
-using RecordStore.Shared.Dtos;
+using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Api.Controllers
 {
@@ -43,7 +43,7 @@ namespace RecordStore.Api.Controllers
 
             if (result == null) return Conflict($"Unable to add album. An Album with Title '{postAlbumDto.Title}', Artist Id '{postAlbumDto.ArtistId}' and Release Year '{postAlbumDto.ReleaseYear}' already exists.");
 
-            return CreatedAtAction("GetAlbumById", new { result.Id }, result);
+            return CreatedAtAction("GetAlbumById", new { result.AlbumId }, result);
         }
 
         [HttpPut("{albumId}")]

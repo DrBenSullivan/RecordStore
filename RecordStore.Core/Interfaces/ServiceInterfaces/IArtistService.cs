@@ -1,10 +1,11 @@
-﻿using RecordStore.Core.Models;
+﻿using RecordStore.Shared.Dtos.ArtistDtos;
 
 namespace RecordStore.Core.Interfaces.ServiceInterfaces
 {
     public interface IArtistService
     {
-        public Task<List<Artist>> FindAllArtistsAsync();
-        public Task<Artist?> FindArtistByIdAsync(int id);
+        Task<List<ArtistAlbumsResponseDto>> FindAlbumsByArtistIdAsync(int artistId);
+        Task<List<ArtistResponseDto>> FindAllArtistsAsync();
+        public Task<ArtistResponseDto?> FindArtistByIdAsync(int id);
     }
 }

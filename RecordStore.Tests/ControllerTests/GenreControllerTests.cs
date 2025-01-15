@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecordStore.Api.Controllers;
+using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos.GenreDtos;
 
 namespace RecordStore.Tests.ControllerTests
 {
@@ -33,8 +35,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Genre>>();
-            var result = okObjectResult?.Value as List<Genre>;
+            okObjectResult?.Value.Should().BeOfType<List<GenreResponseDto>>();
+            var result = okObjectResult?.Value as List<GenreResponseDto>;
             result.Should().BeEmpty();
         }
 
@@ -42,13 +44,13 @@ namespace RecordStore.Tests.ControllerTests
         public async Task GetAllGenres_Genres_ReturnsOkExpectedList()
         {
             // Arrange
-            var expected = new List<Genre>()
+            var existingGenres = new List<Genre>()
             {
                 new() { Id = 1, Name = "TestGenre1" },
                 new() { Id = 2, Name = "TestGenre2" },
                 new() { Id = 3, Name = "TestGenre3" }
-
             };
+            var expected = existingGenres.Select(g => g.ToGenreResponseDto()).ToList();
 
             _genreService
                 .Setup(s => s.FindAllGenresAsync())
@@ -60,8 +62,8 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var okObjectResult = actual as OkObjectResult;
-            okObjectResult?.Value.Should().BeOfType<List<Genre>>();
-            var result = okObjectResult?.Value as List<Genre>;
+            okObjectResult?.Value.Should().BeOfType<List<GenreResponseDto>>();
+            var result = okObjectResult?.Value as List<GenreResponseDto>;
             result.Should().BeEquivalentTo(expected);
         }
 
@@ -92,10 +94,11 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testGenre = new Genre { Id = testId, Name = "TestGenre1" };
+            var expected = testGenre.ToGenreResponseDto();
 
             _genreService
                 .Setup(s => s.FindGenreByIdAsync(testId))
-                .ReturnsAsync(testGenre);
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _genresController.GetGenreById(testId);
@@ -103,9 +106,9 @@ namespace RecordStore.Tests.ControllerTests
             // Assert
             actual.Should().BeOfType<OkObjectResult>();
             var notFoundObjectResult = actual as OkObjectResult;
-            notFoundObjectResult?.Value.Should().BeOfType<Genre>();
-            var result = notFoundObjectResult?.Value as Genre;
-            result.Should().BeEquivalentTo(testGenre);
+            notFoundObjectResult?.Value.Should().BeOfType<GenreResponseDto>();
+            var result = notFoundObjectResult?.Value as GenreResponseDto;
+            result.Should().BeEquivalentTo(expected);
         }
     }
 }
