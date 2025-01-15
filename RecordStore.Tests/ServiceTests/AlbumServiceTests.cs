@@ -184,5 +184,41 @@ namespace RecordStore.Tests.ServiceTests
             // Assert
             result.Should().BeNull();
         }
+
+        [Test]
+        public async Task RemoveAlbumByIdAsync_AlbumDoesNotExist_ReturnsMinusOne()
+        {
+            // Arrange
+            var testId = 1;
+            var expected = -1;
+            
+            _albumRepositoryMock
+                .Setup(r => r.RemoveAlbumByIdAsync(testId))
+                .ReturnsAsync(expected);
+
+            // Act
+            var result = await _albumService.RemoveAlbumByIdAsync(testId);
+
+            // Assert
+            result.Should().Be(expected);
+        }
+
+        [Test]
+        public async Task RemoveAlbumByIdAsync_AlbumExists_ReturnsOne()
+        {
+            // Arrange
+            var testId = 1;
+            var expected = 1;
+
+            _albumRepositoryMock
+                .Setup(r => r.RemoveAlbumByIdAsync(testId))
+                .ReturnsAsync(expected);
+
+            // Act
+            var result = await _albumService.RemoveAlbumByIdAsync(testId);
+
+            // Assert
+            result.Should().Be(expected);
+        }
     }
 }

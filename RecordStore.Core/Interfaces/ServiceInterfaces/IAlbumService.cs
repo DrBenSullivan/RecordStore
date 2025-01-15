@@ -9,5 +9,6 @@ namespace RecordStore.Core.Interfaces.ServiceInterfaces
         Task<Album?> FindAlbumByIdAsync(int id);
         Task<Album?> AddAlbumAsync(PostAlbumDto dto);
         Task<Album?> UpdateAlbumAsync(int albumId, PutAlbumDto dto);
+        Task<int> RemoveAlbumByIdAsync(int albumId);
     }
 }
