@@ -44,7 +44,7 @@ namespace RecordStore.Application.Services
 
         public async Task<int> RemoveAlbumByIdAsync(int albumId)
         {
-            throw new NotImplementedException();
+            return await _albumRepository.RemoveAlbumByIdAsync(albumId);
         }
     }
 }
