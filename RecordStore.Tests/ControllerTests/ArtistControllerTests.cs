@@ -124,7 +124,7 @@ namespace RecordStore.Tests.ControllerTests
                 .ReturnsAsync(() => null);
 
             // Act
-            var actual = await _artistsController.GetAlbumsByArtist(testId);
+            var actual = await _artistsController.GetAlbumsByArtistId(testId);
 
             // Assert
             actual.Should().BeOfType<NotFoundObjectResult>();
@@ -148,8 +148,12 @@ namespace RecordStore.Tests.ControllerTests
 
             var expected = testArtist.ToArtistAlbumsResponseDto(testAlbums);
 
+            _mockArtistService
+                .Setup(s => s.FindAlbumsByArtistIdAsync(testId))
+                .ReturnsAsync(expected);
+
             // Act
-            var actual = await _artistsController.GetAlbumsByArtist(testId);
+            var actual = await _artistsController.GetAlbumsByArtistId(testId);
 
             // Assert
             actual.Should().BeOfType<OkObjectResult>();

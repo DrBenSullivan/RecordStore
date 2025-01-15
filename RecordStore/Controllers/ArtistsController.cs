@@ -33,9 +33,13 @@ namespace RecordStore.Api.Controllers
         }
 
         [HttpGet("{artistId}/albums")]
-        public async Task<IActionResult> GetAlbumsByArtist(int artistId)
+        public async Task<IActionResult> GetAlbumsByArtistId(int artistId)
         {
-            throw new NotImplementedException();
+            var result = await _artistService.FindAlbumsByArtistIdAsync(artistId);
+
+            if (result == null) return NotFound($"The Artist with Id '{artistId}' could not be found.");
+
+            return Ok(result);
         }
     }
 }
