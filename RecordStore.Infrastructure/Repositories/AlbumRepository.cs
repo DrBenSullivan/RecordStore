@@ -64,6 +64,13 @@ namespace RecordStore.Infrastructure.Repositories
             return await _db.SaveChangesAsync();
         }
 
+        public async Task<List<Album>> FetchAllInStockAlbumsAsync()
+        {
+            return await GetAlbumsWithIncludedRelations()
+                .Where(s => s.Stock != null && s.Stock.Quantity > 0)
+                .ToListAsync();
+        }
+
         private IQueryable<Album> GetAlbumsWithIncludedRelations()
         {
             return _db.Albums
