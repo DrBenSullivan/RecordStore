@@ -26,7 +26,12 @@ namespace RecordStore.Infrastructure.Repositories
 
         public async Task<List<Album>> FetchAlbumsByArtistAsync(int artistId)
         {
-            return await _db.Albums.Where(a => a.ArtistId == artistId).ToListAsync();
+            return await _db.Albums
+                .Include(a => a.Artist)
+                .Include(a => a.Genre)
+                .Include(a => a.Stock)
+                .Where(a => a.ArtistId == artistId)
+                .ToListAsync();
         }
     }
 }

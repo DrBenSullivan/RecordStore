@@ -1,7 +1,4 @@
-﻿using RecordStore.Shared.Dtos.ArtistDtos;
-using RecordStore.Shared.Dtos.GenreDtos;
-
-namespace RecordStore.Shared.Dtos.AlbumDtos
+﻿namespace RecordStore.Shared.Dtos.AlbumDtos
 {
     public class AlbumResponseDto
     {
@@ -10,5 +7,6 @@ namespace RecordStore.Shared.Dtos.AlbumDtos
         public string Artist { get; set; } = string.Empty;
         public int ReleaseYear { get; set; }
         public string? Genre { get; set; }
+        public int StockQuantity { get; set; }
     }
 }

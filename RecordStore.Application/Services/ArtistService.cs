@@ -1,7 +1,6 @@
 ﻿using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
-using RecordStore.Core.Models;
 using RecordStore.Shared.Dtos.ArtistDtos;
 
 namespace RecordStore.Application.Services

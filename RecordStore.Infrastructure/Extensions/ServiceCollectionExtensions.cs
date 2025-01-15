@@ -17,11 +17,11 @@ namespace RecordStore.Infrastructure.Extensions
                     ?? throw new ApplicationException($"No 'DevelopmentConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
 
             else if (environment.IsProduction())
-                connectionString = configuration.GetConnectionString("ProductionConnection") 
+                connectionString = configuration.GetConnectionString("ProductionConnection")
                     ?? throw new ApplicationException($"No 'ProductionConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
 
             else
-                connectionString = configuration.GetConnectionString("DefaultConnection") 
+                connectionString = configuration.GetConnectionString("DefaultConnection")
                     ?? throw new ApplicationException($"No 'DefaultConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
@@ -29,16 +29,14 @@ namespace RecordStore.Infrastructure.Extensions
             return services;
         }
 
-        public async static Task<IServiceCollection> SeedDbIfEmptyAsync(this IServiceCollection services)
+        public async static Task<IServiceCollection> SeedDbAsync(this IServiceCollection services)
         {
             using (var serviceProvider = services.BuildServiceProvider())
             {
                 var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.EnsureCreated();
-                if (!dbContext.Artists.Any() && !dbContext.Albums.Any() && !dbContext.Genres.Any())
-                {
-                    await dbContext.Seed();
-                }
+                await dbContext.Database.EnsureDeletedAsync();
+                await dbContext.Database.EnsureCreatedAsync();
+                await dbContext.Seed();
                 dbContext.SaveChanges();
             }
             return services;

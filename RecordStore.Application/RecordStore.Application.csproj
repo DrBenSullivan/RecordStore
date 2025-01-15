@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RecordStore.Core\RecordStore.Core.csproj" />
-    <ProjectReference Include="..\RecordStore.Infrastructure\RecordStore.Infrastructure.csproj" />
     <ProjectReference Include="..\RecordStore.Shared\RecordStore.Shared.csproj" />
   </ItemGroup>
 

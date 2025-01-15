@@ -9,6 +9,7 @@
         public int? GenreId { get; set; }
 
         // Navigation Properties
+        public virtual AlbumStock? Stock { get; set; }
         public virtual Artist? Artist { get; set; }
         public virtual Genre? Genre { get; set; }
     }

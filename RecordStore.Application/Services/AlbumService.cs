@@ -1,7 +1,6 @@
 ﻿using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
-using RecordStore.Core.Models;
 using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Application.Services
@@ -18,7 +17,7 @@ namespace RecordStore.Application.Services
         public async Task<AlbumResponseDto?> AddAlbumAsync(PostAlbumDto postAlbumDto)
         {
             var album = postAlbumDto.ToAlbum();
-            
+
             var result = await _albumRepository.AddAlbumAsync(album);
 
             if (result == null) return null;

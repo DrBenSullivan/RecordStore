@@ -16,39 +16,41 @@ namespace RecordStore.Infrastructure.Repositories
 
         public async Task<List<Album>> FetchAllAlbumsAsync()
         {
-            return await _db.Albums
-                .Include(a => a.Genre)
-                .Include(a => a.Artist)
-                .ToListAsync();
+            return await GetAlbumsWithIncludedRelations().ToListAsync();
         }
 
         public async Task<Album?> FetchAlbumByIdAsync(int id)
         {
-            return await _db.Albums
-                .FindAsync(id);
+            return await GetAlbumsWithIncludedRelations().FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Album?> AddAlbumAsync(Album album)
         {
-            if (_db.Albums.Any(a => a.Title == album.Title && a.ArtistId == album.ArtistId && a.ReleaseYear == album.ReleaseYear))
-                return null;
+            var existingAlbum = await _db.Albums
+                .FirstOrDefaultAsync(a =>
+                    a.Title == album.Title &&
+                    a.ArtistId == album.ArtistId &&
+                    a.ReleaseYear == album.ReleaseYear);
+
+            if (existingAlbum != null) return null;
 
             await _db.Albums.AddAsync(album);
             await _db.SaveChangesAsync();
-            return album;
+
+            return await GetAlbumsWithIncludedRelations().FirstOrDefaultAsync(a => a.Id == album.Id);
         }
 
         public async Task<Album?> UpdateAlbumAsync(Album album)
         {
             var existingAlbum = await _db.Albums.FindAsync(album.Id);
-            
+
             if (existingAlbum == null) return null;
-            
+
             _db.Entry(existingAlbum).CurrentValues.SetValues(album);
 
             await _db.SaveChangesAsync();
 
-            return existingAlbum;
+            return await GetAlbumsWithIncludedRelations().FirstOrDefaultAsync(a => a.Id == album.Id);
         }
 
         public async Task<int> RemoveAlbumByIdAsync(int id)
@@ -60,6 +62,14 @@ namespace RecordStore.Infrastructure.Repositories
             _db.Albums.Remove(existingAlbum);
 
             return await _db.SaveChangesAsync();
+        }
+
+        private IQueryable<Album> GetAlbumsWithIncludedRelations()
+        {
+            return _db.Albums
+                .Include(a => a.Artist)
+                .Include(a => a.Genre)
+                .Include(a => a.Stock);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace RecordStore.Api
 
             builder.Services.AddDatabase(builder.Configuration, builder.Environment);
 
-            if (builder.Environment.IsDevelopment()) await builder.Services.SeedDbIfEmptyAsync();
+            if (builder.Environment.IsDevelopment()) await builder.Services.SeedDbAsync();
 
             builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
             builder.Services.AddScoped<IArtistRepository, ArtistRepository>();

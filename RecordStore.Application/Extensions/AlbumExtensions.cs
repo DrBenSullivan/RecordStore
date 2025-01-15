@@ -13,7 +13,8 @@ namespace RecordStore.Application.Extensions
                 AlbumTitle = album.Title,
                 Artist = album.Artist?.Name ?? throw new ApplicationException($"Tried to convert Album with no artist to Album Response Dto."),
                 ReleaseYear = album.ReleaseYear,
-                Genre = album.Genre?.Name
+                Genre = album.Genre?.Name,
+                StockQuantity = album.Stock?.Quantity ?? 0
             };
         }
     }

@@ -142,7 +142,7 @@ namespace RecordStore.Tests.ServiceTests
             // Assert
             actual.Should().BeNull();
         }
-        
+
         [Test]
         public async Task FindAlbumsByArtistIdAsync_ArtistExistsNoAlbums_ReturnsExpectedResult()
         {

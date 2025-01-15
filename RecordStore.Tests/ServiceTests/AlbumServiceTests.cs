@@ -5,7 +5,6 @@ using RecordStore.Application.Services;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
-using RecordStore.Shared.Dtos;
 using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Tests.ServiceTests
@@ -190,7 +189,7 @@ namespace RecordStore.Tests.ServiceTests
             // Arrange
             var testId = 1;
             var expected = -1;
-            
+
             _albumRepositoryMock
                 .Setup(r => r.RemoveAlbumByIdAsync(testId))
                 .ReturnsAsync(expected);

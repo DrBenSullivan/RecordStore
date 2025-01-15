@@ -1,0 +1,42 @@
+[
+    {
+        "albumId": 1,
+        "quantity":  100
+    },
+    {
+        "albumId": 2,
+        "quantity": 200
+    },
+    {
+        "albumId": 3,
+        "quantity": 45
+    },
+    {
+        "albumId": 4,
+        "quantity": 0
+    },
+    {
+        "albumId": 5,
+        "quantity": 200
+    },
+    {
+        "albumId": 6,
+        "quantity": 11
+    },
+    {
+        "albumId": 7,
+        "quantity": 21
+    },
+    {
+        "albumId": 8,
+        "quantity": 2003
+    },
+    {
+        "albumId": 9,
+        "quantity": 100
+    },
+    {
+        "albumId": 10,
+        "quantity": 2
+    }
+]

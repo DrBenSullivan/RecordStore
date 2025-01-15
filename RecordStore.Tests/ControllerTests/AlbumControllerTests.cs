@@ -230,7 +230,7 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var expectedErrorMessage = $"Unable to delete album. No Album with id '{testId}' exists.";
-            
+
             _albumService
                 .Setup(s => s.RemoveAlbumByIdAsync(testId))
                 .ReturnsAsync(-1);
