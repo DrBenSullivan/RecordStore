@@ -123,18 +123,22 @@ namespace RecordStore.Tests.ControllerTests
         }
 
         [Test]
-        public async Task PostAlbum_AlbumAlreadyExists_ReturnsConflict()
+        public async Task PostAlbum_AlbumAlreadyExists_ReturnsConflictObjectResult()
         {
             // Arrange
             Album? expected = null;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
             _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(expected);
+            var expectedErrorMessage = $"Unable to add album. An Album with Title '{testAlbumDto.Title}', Artist Id '{testAlbumDto.ArtistId}' and Release Year '{testAlbumDto.ReleaseYear}' already exists.";
 
             // Act
             var actual = await _albumController.PostAlbum(testAlbumDto);
 
             // Assert
-            actual.Should().BeOfType<ConflictResult>();
+            actual.Should().BeOfType<ConflictObjectResult>();
+            var conflictObjectResult = actual as ConflictObjectResult;
+            var result = conflictObjectResult?.Value as string;
+            result.Should().Be(expectedErrorMessage);
         }
     }
 }

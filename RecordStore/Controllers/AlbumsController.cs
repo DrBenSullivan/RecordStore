@@ -36,7 +36,13 @@ namespace RecordStore.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> PostAlbum(PostAlbumDto dto)
         {
-            throw new NotImplementedException();
+            var album = dto.ToAlbum();
+
+            var result = await _albumService.AddAlbumAsync(album);
+
+            if (result == null) return Conflict($"Unable to add album. An Album with Title '{dto.Title}', Artist Id '{dto.ArtistId}' and Release Year '{dto.ReleaseYear}' already exists.");
+
+            return CreatedAtAction("GetAlbumById", new { album.Id }, result);
         }
     }
 }
