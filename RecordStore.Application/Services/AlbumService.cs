@@ -63,7 +63,9 @@ namespace RecordStore.Application.Services
 
         public async Task<List<AlbumResponseDto>> FindAllAlbumsInStockAsync()
         {
-            throw new NotImplementedException();
+            var inStockAlbums = await _albumRepository.FetchAllInStockAlbumsAsync();
+
+            return inStockAlbums.Select(a => a.ToAlbumResponseDto()).ToList();
         }
     }
 }
