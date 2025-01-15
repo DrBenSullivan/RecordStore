@@ -1,4 +1,5 @@
 ﻿using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Core.Interfaces.RepositoryInterfaces
 {
@@ -9,7 +10,6 @@ namespace RecordStore.Core.Interfaces.RepositoryInterfaces
         Task<Album?> AddAlbumAsync(Album album);
         Task<Album?> UpdateAlbumAsync(Album album);
         Task<int> RemoveAlbumByIdAsync(int id);
-        Task<List<Album>> FetchAllInStockAlbumsAsync();
-        Task<List<Album>> FetchAlbumsByReleaseYearAsync(int releaseYear);
+        Task<List<Album>> FetchAlbumsAsync(AlbumFilterOptionsDto? filterOptions = null);
     }
 }

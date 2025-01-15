@@ -16,12 +16,20 @@ namespace RecordStore.Api.Controllers
             _albumService = albumService;
         }
 
-        [HttpGet()]
-        public async Task<IActionResult> GetAllAlbums(bool? inStock = false)
+        [HttpGet]
+        public async Task<IActionResult> GetAllAlbums(
+            [FromQuery] bool? inStock = null,
+            [FromQuery] int? releaseYear = null,
+            [FromQuery] int? genreId = null)
         {
-            var result = inStock == true
-                ? await _albumService.FindAllAlbumsInStockAsync()
-                : await _albumService.FindAllAlbumsAsync();
+            AlbumFilterOptionsDto filterOptions = new()
+            {
+                InStock = inStock,
+                ReleaseYear = releaseYear,
+                GenreId = genreId
+            };
+
+            var result = await _albumService.FindAlbumsAsync(filterOptions);
 
             return Ok(result);
         }

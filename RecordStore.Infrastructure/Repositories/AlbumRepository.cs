@@ -2,6 +2,7 @@
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Models;
 using RecordStore.Infrastructure.Persistence;
+using RecordStore.Shared.Dtos.AlbumDtos;
 
 namespace RecordStore.Infrastructure.Repositories
 {
@@ -69,6 +70,24 @@ namespace RecordStore.Infrastructure.Repositories
             return await GetAlbumsWithIncludedRelations()
                 .Where(s => s.Stock != null && s.Stock.Quantity > 0)
                 .ToListAsync();
+        }
+
+        public async Task<List<Album>> FetchAlbumsAsync(AlbumFilterOptionsDto? filterOptions = null)
+        {
+            var albums = GetAlbumsWithIncludedRelations();
+
+            if (filterOptions == null) return await albums.ToListAsync();
+
+            if (filterOptions.InStock.HasValue && filterOptions.InStock.Value)
+                albums = albums.Where(a => a.Stock != null && a.Stock.Quantity > 0);
+
+            if (filterOptions.ReleaseYear.HasValue)
+                albums = albums.Where(a => a.ReleaseYear == filterOptions.ReleaseYear);
+
+            if (filterOptions.GenreId.HasValue)
+                albums = albums.Where(a => a.GenreId == filterOptions.GenreId);
+
+            return await albums.ToListAsync();
         }
 
         private IQueryable<Album> GetAlbumsWithIncludedRelations()

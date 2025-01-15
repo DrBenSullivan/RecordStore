@@ -13,16 +13,11 @@ namespace RecordStore.Application.Services
         {
             _albumRepository = albumRepository;
         }
-
-        public async Task<AlbumResponseDto?> AddAlbumAsync(PostAlbumDto postAlbumDto)
+        public async Task<List<AlbumResponseDto>> FindAlbumsAsync(AlbumFilterOptionsDto? albumFilterOptionsDto = null)
         {
-            var album = postAlbumDto.ToAlbum();
+            var albums = await _albumRepository.FetchAlbumsAsync(albumFilterOptionsDto);
 
-            var result = await _albumRepository.AddAlbumAsync(album);
-
-            if (result == null) return null;
-
-            return result.ToAlbumResponseDto();
+            return albums.Select(a => a.ToAlbumResponseDto()).ToList();
         }
 
         public async Task<AlbumResponseDto?> FindAlbumByIdAsync(int id)
@@ -34,11 +29,15 @@ namespace RecordStore.Application.Services
             return album.ToAlbumResponseDto();
         }
 
-        public async Task<List<AlbumResponseDto>> FindAllAlbumsAsync()
+        public async Task<AlbumResponseDto?> AddAlbumAsync(PostAlbumDto postAlbumDto)
         {
-            var albums = await _albumRepository.FetchAllAlbumsAsync();
+            var album = postAlbumDto.ToAlbum();
 
-            return albums.Select(a => a.ToAlbumResponseDto()).ToList();
+            var result = await _albumRepository.AddAlbumAsync(album);
+
+            if (result == null) return null;
+
+            return result.ToAlbumResponseDto();
         }
 
         public async Task<AlbumResponseDto?> UpdateAlbumAsync(int albumId, PutAlbumDto dto)
@@ -59,13 +58,6 @@ namespace RecordStore.Application.Services
         public async Task<int> RemoveAlbumByIdAsync(int albumId)
         {
             return await _albumRepository.RemoveAlbumByIdAsync(albumId);
-        }
-
-        public async Task<List<AlbumResponseDto>> FindAllAlbumsInStockAsync()
-        {
-            var inStockAlbums = await _albumRepository.FetchAllInStockAlbumsAsync();
-
-            return inStockAlbums.Select(a => a.ToAlbumResponseDto()).ToList();
         }
     }
 }

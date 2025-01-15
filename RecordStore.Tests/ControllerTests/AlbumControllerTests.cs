@@ -22,11 +22,11 @@ namespace RecordStore.Tests.ControllerTests
         }
 
         [Test]
-        public async Task GetAllAlbums_NoAlbums_ReturnsOkEmptyList()
+        public async Task GetAlbums_NoAlbums_ReturnsOkEmptyList()
         {
             // Arrange
             _mockAlbumService
-                .Setup(s => s.FindAllAlbumsAsync())
+                .Setup(s => s.FindAlbumsAsync(It.IsAny<AlbumFilterOptionsDto>()))
                 .ReturnsAsync(() => []);
 
             // Act
@@ -41,7 +41,7 @@ namespace RecordStore.Tests.ControllerTests
         }
 
         [Test]
-        public async Task GetAllAlbums_Albums_ReturnsOkExpectedList()
+        public async Task GetAlbums_Albums_ReturnsOkExpectedList()
         {
             // Arrange
             var existingAlbums = new List<Album>()
@@ -54,7 +54,7 @@ namespace RecordStore.Tests.ControllerTests
             var expected = existingAlbums.Select(a => a.ToAlbumResponseDto()).ToList();
 
             _mockAlbumService
-                .Setup(s => s.FindAllAlbumsAsync())
+                .Setup(s => s.FindAlbumsAsync(It.IsAny<AlbumFilterOptionsDto>()))
                 .ReturnsAsync(expected);
 
             // Act
@@ -66,28 +66,6 @@ namespace RecordStore.Tests.ControllerTests
             okObjectResult?.Value.Should().BeOfType<List<AlbumResponseDto>>();
             var result = okObjectResult?.Value as List<AlbumResponseDto>;
             result.Should().BeEquivalentTo(expected);
-        }
-
-        [Test]
-        public async Task GetAllAlbums_InStockOnly_CallsExpectedMethod()
-        {
-            // Act
-            await _albumController.GetAllAlbums(true);
-
-            // Assert
-            _mockAlbumService.Verify(s => s.FindAllAlbumsAsync(), Times.Never);
-            _mockAlbumService.Verify(s => s.FindAllAlbumsInStockAsync(), Times.Once);
-        }
-
-        [Test]
-        public async Task GetAllAlbums_NoFilter_CallsExpectedMethod()
-        {
-            // Act
-            await _albumController.GetAllAlbums();
-
-            // Assert
-            _mockAlbumService.Verify(s => s.FindAllAlbumsAsync(), Times.Once);
-            _mockAlbumService.Verify(s => s.FindAllAlbumsInStockAsync(), Times.Never);
         }
 
         [Test]
