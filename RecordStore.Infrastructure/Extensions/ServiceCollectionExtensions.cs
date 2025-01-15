@@ -10,22 +10,19 @@ namespace RecordStore.Infrastructure.Extensions
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
         {
-            if (environment.IsDevelopment())
-            {
-                services.AddDbContext<ApplicationDbContext>(options => options.UseInMemoryDatabase("RecordStore"));
-                using (var serviceProvider = services.BuildServiceProvider())
-                {
-                    var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
-                    dbContext.Database.EnsureCreated();
-                    dbContext.Seed();
-                    dbContext.SaveChanges();
-                }
-                return services;
-            }
+            string connectionString;
 
-            string connectionString = environment.IsProduction()
-                ? configuration.GetConnectionString("ProductionConnection") ?? throw new ApplicationException($"No 'ProductionConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'")
-                : configuration.GetConnectionString("DefaultConnection") ?? throw new ApplicationException($"No 'DefaultConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
+            if (environment.IsDevelopment())
+                connectionString = configuration.GetConnectionString("DevelopmentConnection")
+                    ?? throw new ApplicationException($"No 'DevelopmentConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
+
+            else if (environment.IsProduction())
+                connectionString = configuration.GetConnectionString("ProductionConnection") 
+                    ?? throw new ApplicationException($"No 'ProductionConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
+
+            else
+                connectionString =configuration.GetConnectionString("DefaultConnection") 
+                    ?? throw new ApplicationException($"No 'DefaultConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
 
