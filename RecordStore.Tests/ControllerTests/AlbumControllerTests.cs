@@ -158,5 +158,58 @@ namespace RecordStore.Tests.ControllerTests
             var result = conflictObjectResult?.Value as string;
             result.Should().Be(expectedErrorMessage);
         }
+
+        [Test]
+        public async Task PutAlbum_AlbumDoesNotExist_ReturnsNotFound()
+        {
+            // Arrange
+            var testId = 1;
+            var expectedErrorMessage= $"Unable to update album. No Album with id '{testId}' exists.";
+            var testAlbumDto = new PutAlbumDto { Title = "TestAlbum1" };
+
+            _albumService
+                .Setup(s => s.UpdateAlbumAsync(testId, testAlbumDto))
+                .ReturnsAsync((int _, PutAlbumDto _) => null);
+
+            // Act
+            var actual = await _albumController.PutAlbum(testId, testAlbumDto);
+
+            // Assert
+            actual.Should().BeOfType<NotFoundObjectResult>();
+            var notFoundObjectResult = actual as NotFoundObjectResult;
+            var result = notFoundObjectResult?.Value as string;
+            result.Should().Be(expectedErrorMessage);
+        }
+
+        [Test]
+        public async Task PutAlbum_AlbumExists_ReturnsOkWithUpdatedAlbum()
+        {
+            // Arrange
+            var testId = 1;
+            var testAlbumDto = new PutAlbumDto { Title = "newTestAlbum1" };
+            var existingAlbum = new Album { Id = testId, Title = "TestAlbum1", ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year };
+
+            _albumService
+                .Setup(s => s.UpdateAlbumAsync(testId, testAlbumDto))
+                .ReturnsAsync((int id, PutAlbumDto dto) =>
+                {
+                    var updatedAlbum = dto.ToUpdatedAlbum(existingAlbum);
+                    return updatedAlbum;
+                });
+
+            // Act
+            var actual = await _albumController.PutAlbum(testId, testAlbumDto);
+
+            // Assert
+            actual.Should().BeOfType<OkObjectResult>();
+            var okObjectResult = actual as OkObjectResult;
+            okObjectResult?.Value.Should().BeOfType<Album>();
+            var result = okObjectResult?.Value as Album;
+            result?.Id.Should().Be(existingAlbum.Id);
+            result?.ArtistId.Should().Be(existingAlbum.ArtistId);
+            result?.GenreId.Should().Be(existingAlbum.GenreId);
+            result?.ReleaseYear.Should().Be(existingAlbum.ReleaseYear);
+            result?.Title.Should().Be(testAlbumDto.Title);
+        }
     }
 }
