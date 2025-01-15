@@ -41,10 +41,10 @@ namespace RecordStore.Infrastructure.Repositories
         public async Task<Album?> UpdateAlbumAsync(Album album)
         {
             var existingAlbum = await _db.Albums.FindAsync(album.Id);
-
+            
             if (existingAlbum == null) return null;
-
-            _db.Albums.Entry(existingAlbum).CurrentValues.SetValues(album);
+            
+            _db.Entry(existingAlbum).CurrentValues.SetValues(album);
 
             await _db.SaveChangesAsync();
 

@@ -56,5 +56,11 @@ namespace RecordStore.Api.Controllers
 
             return Ok(result);
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAlbum(int albumId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
