@@ -13,5 +13,15 @@ namespace RecordStore.Application.Extensions
                 ArtistName = artist.Name
             };
         }
+
+        public static ArtistAlbumsResponseDto ToArtistAlbumsResponseDto(this Artist artist, List<Album> albums)
+        {
+            return new ArtistAlbumsResponseDto
+            {
+                ArtistId = artist.Id,
+                ArtistName = artist.Name,
+                Albums = albums.Select(a => a.ToAlbumResponseDto()).ToList()
+            };
+        }
     }
 }

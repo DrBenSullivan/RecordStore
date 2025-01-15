@@ -31,7 +31,7 @@ namespace RecordStore.Application.Services
             return artist.ToArtistResponseDto();
         }
 
-        public async Task<List<ArtistAlbumsResponseDto>> FindAlbumsByArtistIdAsync(int artistId)
+        public async Task<ArtistAlbumsResponseDto> FindAlbumsByArtistIdAsync(int artistId)
         {
             throw new NotImplementedException();
         }

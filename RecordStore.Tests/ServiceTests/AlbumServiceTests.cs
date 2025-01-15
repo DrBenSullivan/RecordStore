@@ -69,7 +69,7 @@ namespace RecordStore.Tests.ServiceTests
 
             _albumRepositoryMock
                 .Setup(r => r.FetchAlbumByIdAsync(testId))
-                .ReturnsAsync((int _) => null);
+                .ReturnsAsync(() => null);
 
             // Act
             var actual = await _albumService.FindAlbumByIdAsync(testId);
@@ -127,7 +127,7 @@ namespace RecordStore.Tests.ServiceTests
 
             _albumRepositoryMock
                 .Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
-                .ReturnsAsync((Album _) => null);
+                .ReturnsAsync(() => null);
 
             // Act
             var actual = await _albumService.AddAlbumAsync(testAlbumDto);
@@ -175,7 +175,7 @@ namespace RecordStore.Tests.ServiceTests
 
             _albumRepositoryMock
                 .Setup(r => r.FetchAlbumByIdAsync(testId))
-                .ReturnsAsync((int _) => null);
+                .ReturnsAsync(() => null);
 
             // Act
             var result = await _albumService.UpdateAlbumAsync(testId, testAlbumDto);

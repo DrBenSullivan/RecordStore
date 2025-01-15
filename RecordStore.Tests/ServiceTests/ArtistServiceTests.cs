@@ -67,7 +67,7 @@ namespace RecordStore.Tests.ServiceTests
 
             _artistRepositoryMock
                 .Setup(r => r.FetchArtistByIdAsync(testId))
-                .ReturnsAsync((int _) => null);
+                .ReturnsAsync(() => null);
 
             // Act
             var actual = await _artistService.FindArtistByIdAsync(testId);
@@ -90,6 +90,79 @@ namespace RecordStore.Tests.ServiceTests
 
             // Act
             var actual = await _artistService.FindArtistByIdAsync(testId);
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task FindAlbumsByArtistIdAsync_ArtistExists_ReturnsExpectedResult()
+        {
+            // Arrange
+            int artistTestId = 1;
+            var existingArtist = new Artist { Id = artistTestId, Name = "TestArtist1" };
+            var existingAlbums = new List<Album>
+            {
+                new() { ArtistId = artistTestId, Id = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" },
+                new() { ArtistId = artistTestId, Id = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2" },
+                new() { ArtistId = artistTestId, Id = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3" }
+            };
+
+            var expected = existingArtist.ToArtistAlbumsResponseDto(existingAlbums);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchArtistByIdAsync(artistTestId))
+                .ReturnsAsync(existingArtist);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchAlbumsByArtistAsync(artistTestId))
+                .ReturnsAsync(existingAlbums);
+
+            // Act
+            var actual = await _artistService.FindAlbumsByArtistIdAsync(artistTestId);
+
+            // Assert
+            actual.Should().NotBeNull();
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task FindAlbumsByArtistIdAsync_ArtistDoesNotExist_ReturnsNull()
+        {
+            // Arrange
+            int artistTestId = 1;
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchArtistByIdAsync(artistTestId))
+                .ReturnsAsync(() => null);
+
+            // Act
+            var actual = await _artistService.FindAlbumsByArtistIdAsync(artistTestId);
+
+            // Assert
+            actual.Should().BeNull();
+        }
+
+        
+        [Test]
+        public async Task FindAlbumsByArtistIdAsync_ArtistExistsNoAlbums_ReturnsExpectedResult()
+        {
+            // Arrange
+            int artistTestId = 1;
+            var existingArtist = new Artist() { Id = 1, Name = "TestArtist" };
+            var existingAlbums = new List<Album>();
+            var expected = existingArtist.ToArtistAlbumsResponseDto(existingAlbums);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchArtistByIdAsync(artistTestId))
+                .ReturnsAsync(existingArtist);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchAlbumsByArtistAsync(artistTestId))
+                .ReturnsAsync(() => []);
+
+            // Act
+            var actual = await _artistService.FindAlbumsByArtistIdAsync(artistTestId);
 
             // Assert
             actual.Should().BeEquivalentTo(expected);
