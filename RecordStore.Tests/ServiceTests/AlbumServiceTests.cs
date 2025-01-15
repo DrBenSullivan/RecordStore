@@ -24,14 +24,15 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindAllAlbumsAsync_NoAlbums_ReturnsEmptyList()
         {
             // Arrange
-            var expected = new List<Album>();
-            _albumRepositoryMock.Setup(r => r.FetchAllAlbumsAsync()).Returns(Task.FromResult(expected));
+            _albumRepositoryMock
+                .Setup(r => r.FetchAllAlbumsAsync())
+                .ReturnsAsync(() => []);
 
             // Act
             var actual = await _albumService.FindAllAlbumsAsync();
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeEmpty();
         }
 
         [Test]
@@ -45,7 +46,10 @@ namespace RecordStore.Tests.ServiceTests
                 new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3" },
 
             };
-            _albumRepositoryMock.Setup(r => r.FetchAllAlbumsAsync()).ReturnsAsync(expected);
+
+            _albumRepositoryMock
+                .Setup(r => r.FetchAllAlbumsAsync())
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _albumService.FindAllAlbumsAsync();
@@ -58,15 +62,17 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindAlbumByIdAsync_DoesNotExist_ReturnsNull()
         {
             // Arrange
-            Album? expected = null;
             int testId = 1;
-            _albumRepositoryMock.Setup(r => r.FetchAlbumByIdAsync(testId)).ReturnsAsync(expected);
+
+            _albumRepositoryMock
+                .Setup(r => r.FetchAlbumByIdAsync(testId))
+                .ReturnsAsync((int _) => null);
 
             // Act
             var actual = await _albumService.FindAlbumByIdAsync(testId);
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeNull();
         }
 
         [Test]
@@ -75,7 +81,10 @@ namespace RecordStore.Tests.ServiceTests
             // Arrange
             int testId = 1;
             var expected = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumRepositoryMock.Setup(r => r.FetchAlbumByIdAsync(testId)).ReturnsAsync(expected);
+
+            _albumRepositoryMock
+                .Setup(r => r.FetchAlbumByIdAsync(testId))
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _albumService.FindAlbumByIdAsync(testId);
@@ -90,9 +99,14 @@ namespace RecordStore.Tests.ServiceTests
             // Arrange
             int dbGeneratedId = 10;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumRepositoryMock.Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
-                .Callback<Album>(a => a.Id = dbGeneratedId)
-                .ReturnsAsync((Album a) => a);
+
+            _albumRepositoryMock
+                .Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
+                .ReturnsAsync((Album a) => 
+                {
+                    a.Id = dbGeneratedId;
+                    return a;
+                });
 
             // Act
             var actual = await _albumService.AddAlbumAsync(testAlbumDto);
@@ -109,9 +123,11 @@ namespace RecordStore.Tests.ServiceTests
         public async Task AddAlbum_AlreadyExists_ReturnsNull()
         {
             // Arrange
-            Album? expected = null;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumRepositoryMock.Setup(r => r.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(expected);
+
+            _albumRepositoryMock
+                .Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
+                .ReturnsAsync((Album _) => null);
 
             // Act
             var actual = await _albumService.AddAlbumAsync(testAlbumDto);
@@ -121,12 +137,17 @@ namespace RecordStore.Tests.ServiceTests
         }
 
         [Test]
-        public async Task PutAlbum_ValidProperties_ReturnsUpdatedAlbum()
+        public async Task UpdateAlbumAsync_ValidProperties_ReturnsUpdatedAlbum()
         {
             // Arrange
             var testId = 1;
             var testAlbumDto = new PutAlbumDto { Title = "NewTestTitle" };
             var existingAlbum = new Album { Id = testId, Title = "TestTile1", ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year };
+
+            _albumRepositoryMock
+                .Setup(r => r.FetchAlbumByIdAsync(testId))
+                .ReturnsAsync(existingAlbum);
+
             _albumRepositoryMock
                 .Setup(r => r.UpdateAlbumAsync(It.IsAny<Album>()))
                 .ReturnsAsync((Album a) =>
@@ -139,22 +160,23 @@ namespace RecordStore.Tests.ServiceTests
             var result = await _albumService.UpdateAlbumAsync(testId, testAlbumDto);
 
             // Asset
-            result.Title.Should().Be(testAlbumDto.Title);
-            result.Id.Should().Be(existingAlbum.Id);
-            result.ArtistId.Should().Be(existingAlbum.ArtistId);
-            result.GenreId.Should().Be(existingAlbum.GenreId);
-            result.ReleaseYear.Should().Be(existingAlbum.ReleaseYear);
+            result?.Title.Should().Be(testAlbumDto.Title);
+            result?.Id.Should().Be(existingAlbum.Id);
+            result?.ArtistId.Should().Be(existingAlbum.ArtistId);
+            result?.GenreId.Should().Be(existingAlbum.GenreId);
+            result?.ReleaseYear.Should().Be(existingAlbum.ReleaseYear);
         }
 
         [Test]
-        public async Task PutAlbum_AlbumDoesNotExist_ReturnsNull()
+        public async Task UpdateAlbumAsync_AlbumDoesNotExist_ReturnsNull()
         {
             // Arrange
             var testId = 1;
             var testAlbumDto = new PutAlbumDto() { Title = "NewTestTitle" };
+
             _albumRepositoryMock
                 .Setup(r => r.FetchAlbumByIdAsync(testId))
-                .ReturnsAsync((Album a) => null);
+                .ReturnsAsync((int _) => null);
 
             // Act
             var result = await _albumService.UpdateAlbumAsync(testId, testAlbumDto);

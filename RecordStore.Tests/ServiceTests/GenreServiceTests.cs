@@ -23,14 +23,15 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindAllGenresAsync_NoGenres_ReturnsEmptyList()
         {
             // Arrange
-            var expected = new List<Genre>();
-            _genreRepositoryMock.Setup(r => r.FetchAllGenresAsync()).ReturnsAsync(expected);
+            _genreRepositoryMock
+                .Setup(r => r.FetchAllGenresAsync())
+                .ReturnsAsync(() => []);
 
             // Act
             var actual = await _genreService.FindAllGenresAsync();
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeEmpty();
         }
 
         [Test]
@@ -43,7 +44,10 @@ namespace RecordStore.Tests.ServiceTests
                 new() { Id = 2, Name = "TestGenre2" },
                 new() { Id = 3, Name = "TestGenre3" }
             };
-            _genreRepositoryMock.Setup(r => r.FetchAllGenresAsync()).ReturnsAsync(expected);
+
+            _genreRepositoryMock
+                .Setup(r => r.FetchAllGenresAsync())
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _genreService.FindAllGenresAsync();
@@ -56,15 +60,17 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindGenreByIdAsync_DoesNotExist_ReturnsNull()
         {
             // Arrange
-            Genre? expected = null;
             int testId = 1;
-            _genreRepositoryMock.Setup(r => r.FetchGenreByIdAsync(testId)).ReturnsAsync(expected);
+
+            _genreRepositoryMock
+                .Setup(r => r.FetchGenreByIdAsync(testId))
+                .ReturnsAsync((int i) => null);
 
             // Act
             var actual = await _genreService.FindGenreByIdAsync(testId);
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeNull();
         }
 
         [Test]
@@ -73,7 +79,10 @@ namespace RecordStore.Tests.ServiceTests
             // Arrange
             int testId = 1;
             var expected = new Genre { Id = testId, Name = "TestGenre1" };
-            _genreRepositoryMock.Setup(r => r.FetchGenreByIdAsync(testId)).ReturnsAsync(expected);
+
+            _genreRepositoryMock
+                .Setup(r => r.FetchGenreByIdAsync(testId))
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _genreService.FindGenreByIdAsync(testId);

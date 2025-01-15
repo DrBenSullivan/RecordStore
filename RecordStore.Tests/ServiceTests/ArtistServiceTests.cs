@@ -23,14 +23,15 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindAllArtistsAsync_NoArtists_ReturnsEmptyList()
         {
             // Arrange
-            var expected = new List<Artist>();
-            _artistRepositoryMock.Setup(r => r.FetchAllArtistsAsync()).Returns(Task.FromResult(expected));
+            _artistRepositoryMock
+                .Setup(r => r.FetchAllArtistsAsync())
+                .ReturnsAsync(() => []);
 
             // Act
             var actual = await _artistService.FindAllArtistsAsync();
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeEmpty();
         }
 
         [Test]
@@ -43,7 +44,10 @@ namespace RecordStore.Tests.ServiceTests
                 new() { Id = 2, Name = "TestArtist2" },
                 new() { Id = 3, Name = "TestArtist3" }
             };
-            _artistRepositoryMock.Setup(r => r.FetchAllArtistsAsync()).ReturnsAsync(expected);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchAllArtistsAsync())
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _artistService.FindAllArtistsAsync();
@@ -56,15 +60,17 @@ namespace RecordStore.Tests.ServiceTests
         public async Task FindArtistByIdAsync_DoesNotExist_ReturnsNull()
         {
             // Arrange
-            Artist? expected = null;
             int testId = 1;
-            _artistRepositoryMock.Setup(r => r.FetchArtistByIdAsync(testId)).ReturnsAsync(expected);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchArtistByIdAsync(testId))
+                .ReturnsAsync((int _) => null);
 
             // Act
             var actual = await _artistService.FindArtistByIdAsync(testId);
 
             // Assert
-            actual.Should().BeEquivalentTo(expected);
+            actual.Should().BeNull();
         }
 
         [Test]
@@ -73,7 +79,10 @@ namespace RecordStore.Tests.ServiceTests
             // Arrange
             int testId = 1;
             var expected = new Artist { Id = testId, Name = "TestArtist1" };
-            _artistRepositoryMock.Setup(r => r.FetchArtistByIdAsync(testId)).ReturnsAsync(expected);
+
+            _artistRepositoryMock
+                .Setup(r => r.FetchArtistByIdAsync(testId))
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _artistService.FindArtistByIdAsync(testId);

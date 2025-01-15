@@ -31,9 +31,15 @@ namespace RecordStore.Application.Services
             return await _albumRepository.FetchAllAlbumsAsync();
         }
 
-        public async Task<Album> UpdateAlbumAsync(int albumId, PutAlbumDto dto)
+        public async Task<Album?> UpdateAlbumAsync(int albumId, PutAlbumDto dto)
         {
-            throw new NotImplementedException();
+            var existingAlbum = await FindAlbumByIdAsync(albumId);
+
+            if (existingAlbum == null) return null;
+
+            var updatedAlbum = dto.ToUpdatedAlbum(existingAlbum);
+
+            return await _albumRepository.UpdateAlbumAsync(updatedAlbum);
         }
     }
 }
