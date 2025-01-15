@@ -25,8 +25,9 @@ namespace RecordStore.Tests.ControllerTests
         public async Task GetAllAlbums_NoAlbums_ReturnsOkEmptyList()
         {
             // Arrange
-            var expected = new List<Album>();
-            _albumService.Setup(s => s.FindAllAlbumsAsync()).ReturnsAsync(expected);
+            _albumService
+                .Setup(s => s.FindAllAlbumsAsync())
+                .ReturnsAsync(() => []);
 
             // Act
             var actual = await _albumController.GetAllAlbums();
@@ -36,7 +37,7 @@ namespace RecordStore.Tests.ControllerTests
             var okObjectResult = actual as OkObjectResult;
             okObjectResult?.Value.Should().BeOfType<List<Album>>();
             var result = okObjectResult?.Value as List<Album>;
-            result.Should().BeEquivalentTo(expected);
+            result.Should().BeEmpty();
         }
 
         [Test]
@@ -50,7 +51,10 @@ namespace RecordStore.Tests.ControllerTests
                 new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3" },
 
             };
-            _albumService.Setup(s => s.FindAllAlbumsAsync()).ReturnsAsync(expected);
+
+            _albumService
+                .Setup(s => s.FindAllAlbumsAsync())
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _albumController.GetAllAlbums();
@@ -68,9 +72,11 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            Album? testAlbum = null;
             var expectedErrorMessage = $"The album with id '{testId}' could not be found.";
-            _albumService.Setup(s => s.FindAlbumByIdAsync(testId)).ReturnsAsync(testAlbum);
+
+            _albumService
+                .Setup(s => s.FindAlbumByIdAsync(testId))
+                .ReturnsAsync((int _) => null);
 
             // Act
             var actual = await _albumController.GetAlbumById(testId);
@@ -88,7 +94,10 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testAlbum = new Album { Id = testId, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumService.Setup(s => s.FindAlbumByIdAsync(testId)).ReturnsAsync(testAlbum);
+
+            _albumService
+                .Setup(s => s.FindAlbumByIdAsync(testId))
+                .ReturnsAsync(testAlbum);
 
             // Act
             var actual = await _albumController.GetAlbumById(testId);
@@ -107,6 +116,8 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
+            var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear, Title = testAlbumDto.Title };
+
             _albumService
                 .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))
                 .ReturnsAsync((PostAlbumDto d) =>
@@ -115,7 +126,6 @@ namespace RecordStore.Tests.ControllerTests
                     album.Id = testId;
                     return album;
                 });
-            var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear, Title = testAlbumDto.Title };
 
             // Act
             var actual = await _albumController.PostAlbum(testAlbumDto);
@@ -132,10 +142,12 @@ namespace RecordStore.Tests.ControllerTests
         public async Task PostAlbum_AlbumAlreadyExists_ReturnsConflictObjectResult()
         {
             // Arrange
-            Album? expected = null;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>())).ReturnsAsync(expected);
             var expectedErrorMessage = $"Unable to add album. An Album with Title '{testAlbumDto.Title}', Artist Id '{testAlbumDto.ArtistId}' and Release Year '{testAlbumDto.ReleaseYear}' already exists.";
+
+            _albumService
+                .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))
+                .ReturnsAsync((PostAlbumDto _) => null);
 
             // Act
             var actual = await _albumController.PostAlbum(testAlbumDto);

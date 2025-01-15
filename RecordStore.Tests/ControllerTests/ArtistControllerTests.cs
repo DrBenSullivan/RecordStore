@@ -23,8 +23,9 @@ namespace RecordStore.Tests.ControllerTests
         public async Task GetAllArtists_NoArtistss_ReturnsOkEmptyList()
         {
             // Arrange
-            var expected = new List<Artist>();
-            _artistService.Setup(s => s.FindAllArtistsAsync()).ReturnsAsync(expected);
+            _artistService
+                .Setup(s => s.FindAllArtistsAsync())
+                .ReturnsAsync(() => []);
 
             // Act
             var actual = await _artistsController.GetAllArtists();
@@ -34,7 +35,7 @@ namespace RecordStore.Tests.ControllerTests
             var okObjectResult = actual as OkObjectResult;
             okObjectResult?.Value.Should().BeOfType<List<Artist>>();
             var result = okObjectResult?.Value as List<Artist>;
-            result.Should().BeEquivalentTo(expected);
+            result.Should().BeEmpty();
         }
 
         [Test]
@@ -48,7 +49,10 @@ namespace RecordStore.Tests.ControllerTests
                 new() { Id = 3, Name = "TestArtist3" }
 
             };
-            _artistService.Setup(s => s.FindAllArtistsAsync()).ReturnsAsync(expected);
+
+            _artistService
+                .Setup(s => s.FindAllArtistsAsync())
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _artistsController.GetAllArtists();
@@ -66,9 +70,11 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            Artist? testArtist = null;
             var expectedErrorMessage = $"The artist with id '{testId}' could not be found.";
-            _artistService.Setup(s => s.FindArtistByIdAsync(testId)).ReturnsAsync(testArtist);
+
+            _artistService
+                .Setup(s => s.FindArtistByIdAsync(testId))
+                .ReturnsAsync((int _) => null);
 
             // Act
             var actual = await _artistsController.GetArtistById(testId);
@@ -86,7 +92,10 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testArtist = new Artist { Id = testId, Name = "TestArtist1" };
-            _artistService.Setup(s => s.FindArtistByIdAsync(testId)).ReturnsAsync(testArtist);
+
+            _artistService
+                .Setup(s => s.FindArtistByIdAsync(testId))
+                .ReturnsAsync(testArtist);
 
             // Act
             var actual = await _artistsController.GetArtistById(testId);

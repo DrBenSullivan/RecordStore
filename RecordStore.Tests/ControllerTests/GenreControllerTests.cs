@@ -23,8 +23,9 @@ namespace RecordStore.Tests.ControllerTests
         public async Task GetAllGenres_NoGenres_ReturnsOkEmptyList()
         {
             // Arrange
-            var expected = new List<Genre>();
-            _genreService.Setup(s => s.FindAllGenresAsync()).ReturnsAsync(expected);
+            _genreService
+                .Setup(s => s.FindAllGenresAsync())
+                .ReturnsAsync(() => []);
 
             // Act
             var actual = await _genresController.GetAllGenres();
@@ -34,7 +35,7 @@ namespace RecordStore.Tests.ControllerTests
             var okObjectResult = actual as OkObjectResult;
             okObjectResult?.Value.Should().BeOfType<List<Genre>>();
             var result = okObjectResult?.Value as List<Genre>;
-            result.Should().BeEquivalentTo(expected);
+            result.Should().BeEmpty();
         }
 
         [Test]
@@ -48,7 +49,10 @@ namespace RecordStore.Tests.ControllerTests
                 new() { Id = 3, Name = "TestGenre3" }
 
             };
-            _genreService.Setup(s => s.FindAllGenresAsync()).ReturnsAsync(expected);
+
+            _genreService
+                .Setup(s => s.FindAllGenresAsync())
+                .ReturnsAsync(expected);
 
             // Act
             var actual = await _genresController.GetAllGenres();
@@ -66,9 +70,11 @@ namespace RecordStore.Tests.ControllerTests
         {
             // Arrange
             var testId = 1;
-            Genre? testGenre = null;
             var expectedErrorMessage = $"The genre with id '{testId}' could not be found.";
-            _genreService.Setup(s => s.FindGenreByIdAsync(testId)).ReturnsAsync(testGenre);
+
+            _genreService
+                .Setup(s => s.FindGenreByIdAsync(testId))
+                .ReturnsAsync((int _) => null);
 
             // Act
             var actual = await _genresController.GetGenreById(testId);
@@ -86,7 +92,10 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testGenre = new Genre { Id = testId, Name = "TestGenre1" };
-            _genreService.Setup(s => s.FindGenreByIdAsync(testId)).ReturnsAsync(testGenre);
+
+            _genreService
+                .Setup(s => s.FindGenreByIdAsync(testId))
+                .ReturnsAsync(testGenre);
 
             // Act
             var actual = await _genresController.GetGenreById(testId);
