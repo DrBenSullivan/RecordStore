@@ -1,6 +1,8 @@
-﻿using RecordStore.Core.Interfaces.RepositoryInterfaces;
+﻿using RecordStore.Application.Extensions;
+using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos;
 
 namespace RecordStore.Application.Services
 {
@@ -13,8 +15,9 @@ namespace RecordStore.Application.Services
             _albumRepository = albumRepository;
         }
 
-        public async Task<Album?> AddAlbumAsync(Album album)
+        public async Task<Album?> AddAlbumAsync(PostAlbumDto dto)
         {
+            var album = dto.ToAlbum();
             return await _albumRepository.AddAlbumAsync(album);
         }
 
@@ -28,7 +31,7 @@ namespace RecordStore.Application.Services
             return await _albumRepository.FetchAllAlbumsAsync();
         }
 
-        public async Task<List<Album>> UpdateAlbumAsync(Album album)
+        public async Task<Album> UpdateAlbumAsync(PutAlbumDto dto)
         {
             throw new NotImplementedException();
         }

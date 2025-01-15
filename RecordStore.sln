@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordStore.Application", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RecordStore.Tests", "RecordStore.Tests\RecordStore.Tests.csproj", "{7B216DE3-8E3B-4FE5-93D1-2F5CF55E1823}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecordStore.Shared", "RecordStore.Shared\RecordStore.Shared.csproj", "{8F2EDE54-240C-47FA-B574-268D2269128A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{7B216DE3-8E3B-4FE5-93D1-2F5CF55E1823}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B216DE3-8E3B-4FE5-93D1-2F5CF55E1823}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B216DE3-8E3B-4FE5-93D1-2F5CF55E1823}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F2EDE54-240C-47FA-B574-268D2269128A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F2EDE54-240C-47FA-B574-268D2269128A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F2EDE54-240C-47FA-B574-268D2269128A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F2EDE54-240C-47FA-B574-268D2269128A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,10 +1,10 @@
 using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using RecordStore.Application.Services;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos;
 
 namespace RecordStore.Tests.ServiceTests
 {
@@ -89,19 +89,19 @@ namespace RecordStore.Tests.ServiceTests
         {
             // Arrange
             int dbGeneratedId = 10;
-            var testAlbum = new Album { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
+            var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
             _albumRepositoryMock.Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
                 .Callback<Album>(a => a.Id = dbGeneratedId)
                 .ReturnsAsync((Album a) => a);
 
             // Act
-            var actual = await _albumService.AddAlbumAsync(testAlbum);
+            var actual = await _albumService.AddAlbumAsync(testAlbumDto);
 
             // Assert
-            actual?.ArtistId.Should().Be(testAlbum.ArtistId);
-            actual?.GenreId.Should().Be(testAlbum.GenreId);
-            actual?.ReleaseYear.Should().Be(testAlbum.ReleaseYear);
-            actual?.Title.Should().Be(testAlbum.Title);
+            actual?.ArtistId.Should().Be(testAlbumDto.ArtistId);
+            actual?.GenreId.Should().Be(testAlbumDto.GenreId);
+            actual?.ReleaseYear.Should().Be(testAlbumDto.ReleaseYear);
+            actual?.Title.Should().Be(testAlbumDto.Title);
             actual?.Id.Should().Be(dbGeneratedId);
         }
 
@@ -110,11 +110,11 @@ namespace RecordStore.Tests.ServiceTests
         {
             // Arrange
             Album? expected = null;
-            var testAlbum = new Album { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumRepositoryMock.Setup(r => r.AddAlbumAsync(testAlbum)).ReturnsAsync(expected);
+            var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
+            _albumRepositoryMock.Setup(r => r.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(expected);
 
             // Act
-            var actual = await _albumService.AddAlbumAsync(testAlbum);
+            var actual = await _albumService.AddAlbumAsync(testAlbumDto);
 
             // Assert
             actual.Should().BeNull();

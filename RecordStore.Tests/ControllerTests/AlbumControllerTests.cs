@@ -2,9 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecordStore.Api.Controllers;
-using RecordStore.Api.Dtos;
+using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
+using RecordStore.Shared.Dtos;
 
 namespace RecordStore.Tests.ControllerTests
 {
@@ -106,9 +107,14 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<Album>()))
-                .Callback<Album>(a => a.Id = testId)
-                .ReturnsAsync((Album a) => a);
+            _albumService
+                .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))
+                .ReturnsAsync((PostAlbumDto d) =>
+                {
+                    var album = d.ToAlbum();
+                    album.Id = testId;
+                    return album;
+                });
             var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear, Title = testAlbumDto.Title };
 
             // Act
@@ -128,7 +134,7 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             Album? expected = null;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(expected);
+            _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>())).ReturnsAsync(expected);
             var expectedErrorMessage = $"Unable to add album. An Album with Title '{testAlbumDto.Title}', Artist Id '{testAlbumDto.ArtistId}' and Release Year '{testAlbumDto.ReleaseYear}' already exists.";
 
             // Act
