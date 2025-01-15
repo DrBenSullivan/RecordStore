@@ -218,5 +218,44 @@ namespace RecordStore.Tests.ServiceTests
             // Assert
             result.Should().Be(expected);
         }
+
+        [Test]
+        public async Task FindAllAlbumsInStock_AlbumsInStock_ReturnsExpectedList()
+        {
+            // Arrange
+            var albumsInStock = new List<Album>
+            {
+                new() { Id = 1, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1", Artist = new() { Name = "TestArtist1" }, Stock = new() { AlbumId = 1, Quantity = 10} },
+                new() { Id = 2, ArtistId = 2, GenreId = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2", Artist = new() { Name = "TestArtist2" }, Stock = new() { AlbumId = 2, Quantity = 20} },
+                new() { Id = 3, ArtistId = 3, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3", Artist = new() { Name = "TestArtist3" }, Stock = new() { AlbumId = 3, Quantity = 30} }
+            };
+            var expected = albumsInStock.Select(a => a.ToAlbumResponseDto()).ToList();
+
+            _albumRepositoryMock
+                .Setup(r => r.FetchAllInStockAlbumsAsync())
+                .ReturnsAsync(albumsInStock);
+
+            // Act
+            var actual = await _albumService.FindAllAlbumsInStockAsync();
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task FindAllAlbumsInStock_NoAlbumsInStock_ReturnsEmptyList()
+        {
+            // Arrange
+            _albumRepositoryMock
+                .Setup(r => r.FetchAllInStockAlbumsAsync())
+                .ReturnsAsync(() => []);
+
+            // Act
+            var actual = await _albumService.FindAllAlbumsInStockAsync();
+
+            // Assert
+            actual.Should().BeOfType<List<AlbumResponseDto>>();
+            actual.Should().BeEmpty();
+        }
     }
 }
