@@ -11,21 +11,21 @@ namespace RecordStore.Tests.ControllerTests
 {
     public class ArtistsControllerTests
     {
-        private Mock<IArtistService> _artistService;
+        private Mock<IArtistService> _mockArtistService;
         private ArtistsController _artistsController;
 
         [SetUp]
         public void SetUp()
         {
-            _artistService = new Mock<IArtistService>();
-            _artistsController = new ArtistsController(_artistService.Object);
+            _mockArtistService = new Mock<IArtistService>();
+            _artistsController = new ArtistsController(_mockArtistService.Object);
         }
 
         [Test]
         public async Task GetAllArtists_NoArtistss_ReturnsOkEmptyList()
         {
             // Arrange
-            _artistService
+            _mockArtistService
                 .Setup(s => s.FindAllArtistsAsync())
                 .ReturnsAsync(() => []);
 
@@ -53,7 +53,7 @@ namespace RecordStore.Tests.ControllerTests
 
             var expected = existingArtists.Select(a => a.ToArtistResponseDto()).ToList();
 
-            _artistService
+            _mockArtistService
                 .Setup(s => s.FindAllArtistsAsync())
                 .ReturnsAsync(expected);
 
@@ -75,7 +75,7 @@ namespace RecordStore.Tests.ControllerTests
             var testId = 1;
             var expectedErrorMessage = $"The Artist with Id '{testId}' could not be found.";
 
-            _artistService
+            _mockArtistService
                 .Setup(s => s.FindArtistByIdAsync(testId))
                 .ReturnsAsync((int _) => null);
 
@@ -97,7 +97,7 @@ namespace RecordStore.Tests.ControllerTests
             var existingArtist = new Artist { Id = testId, Name = "TestArtist1" };
             var expected = existingArtist.ToArtistResponseDto();
 
-            _artistService
+            _mockArtistService
                 .Setup(s => s.FindArtistByIdAsync(testId))
                 .ReturnsAsync(expected);
 
@@ -109,6 +109,52 @@ namespace RecordStore.Tests.ControllerTests
             var notFoundObjectResult = actual as OkObjectResult;
             notFoundObjectResult?.Value.Should().BeOfType<ArtistResponseDto>();
             var result = notFoundObjectResult?.Value as ArtistResponseDto;
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task GetAlbumsByArtistId_ArtistDoesNotExist_ReturnsNotFoundWithExpectedErrorMessage()
+        {
+            // Arrange
+            var testId = 1;
+            var expectedErrorMessage = $"The Artist with Id '{testId}' could not be found.";
+
+            _mockArtistService
+                .Setup(s => s.FindAlbumsByArtistIdAsync(testId))
+                .ReturnsAsync(() => null);
+
+            // Act
+            var actual = await _artistsController.GetAlbumsByArtist(testId);
+
+            // Assert
+            actual.Should().BeOfType<NotFoundObjectResult>();
+            var notFoundObjectResult = actual as NotFoundObjectResult;
+            var result = notFoundObjectResult?.Value as string;
+            result.Should().BeEquivalentTo(expectedErrorMessage);
+        }
+
+        [Test]
+        public async Task GetAlbumsByArtistId_ArtistExists_ReturnsOkWithExpectedResult()
+        {
+            // Arrange
+            var testId = 1;
+            var testArtist = new Artist { Id = testId, Name = "TestArtist" };
+            var testAlbums = new List<Album>
+            {
+                new() { Id = 1, ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1", Artist = testArtist },
+                new() { Id = 2, ArtistId = 1, GenreId = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2", Artist = testArtist },
+                new() { Id = 3, ArtistId = 1, GenreId = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3", Artist = testArtist }
+            };
+
+            var expected = testArtist.ToArtistAlbumsResponseDto(testAlbums);
+
+            // Act
+            var actual = await _artistsController.GetAlbumsByArtist(testId);
+
+            // Assert
+            actual.Should().BeOfType<OkObjectResult>();
+            var okObjectResult = actual as OkObjectResult;
+            var result = okObjectResult?.Value as ArtistAlbumsResponseDto;
             result.Should().BeEquivalentTo(expected);
         }
     }
