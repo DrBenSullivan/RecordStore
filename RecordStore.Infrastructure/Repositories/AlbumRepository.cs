@@ -50,5 +50,16 @@ namespace RecordStore.Infrastructure.Repositories
 
             return existingAlbum;
         }
+
+        public async Task<int> RemoveAlbumByIdAsync(int id)
+        {
+            var existingAlbum = await _db.Albums.FindAsync(id);
+
+            if (existingAlbum == null) return -1;
+
+            _db.Albums.Remove(existingAlbum);
+
+            return await _db.SaveChangesAsync();
+        }
     }
 }

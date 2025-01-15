@@ -8,5 +8,6 @@ namespace RecordStore.Core.Interfaces.RepositoryInterfaces
         Task<Album?> FetchAlbumByIdAsync(int id);
         Task<Album?> AddAlbumAsync(Album album);
         Task<Album?> UpdateAlbumAsync(Album album);
+        Task<int> RemoveAlbumByIdAsync(int id);
     }
 }
