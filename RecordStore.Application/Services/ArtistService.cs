@@ -31,9 +31,15 @@ namespace RecordStore.Application.Services
             return artist.ToArtistResponseDto();
         }
 
-        public async Task<ArtistAlbumsResponseDto> FindAlbumsByArtistIdAsync(int artistId)
+        public async Task<ArtistAlbumsResponseDto?> FindAlbumsByArtistIdAsync(int artistId)
         {
-            throw new NotImplementedException();
+            var artist = await _artistRepository.FetchArtistByIdAsync(artistId);
+
+            if (artist == null) return null;
+
+            var artistAlbums = await _artistRepository.FetchAlbumsByArtistAsync(artistId);
+
+            return artist.ToArtistAlbumsResponseDto(artistAlbums);
         }
     }
 }

@@ -103,9 +103,9 @@ namespace RecordStore.Tests.ServiceTests
             var existingArtist = new Artist { Id = artistTestId, Name = "TestArtist1" };
             var existingAlbums = new List<Album>
             {
-                new() { ArtistId = artistTestId, Id = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" },
-                new() { ArtistId = artistTestId, Id = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2" },
-                new() { ArtistId = artistTestId, Id = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3" }
+                new() { ArtistId = artistTestId, Id = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1", Artist = existingArtist },
+                new() { ArtistId = artistTestId, Id = 2, ReleaseYear = DateTime.UtcNow.AddYears(-1).Year, Title = "TestAlbum2", Artist = existingArtist },
+                new() { ArtistId = artistTestId, Id = 3, ReleaseYear = DateTime.UtcNow.AddYears(-2).Year, Title = "TestAlbum3", Artist = existingArtist }
             };
 
             var expected = existingArtist.ToArtistAlbumsResponseDto(existingAlbums);
@@ -142,7 +142,6 @@ namespace RecordStore.Tests.ServiceTests
             // Assert
             actual.Should().BeNull();
         }
-
         
         [Test]
         public async Task FindAlbumsByArtistIdAsync_ArtistExistsNoAlbums_ReturnsExpectedResult()
