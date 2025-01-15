@@ -27,5 +27,10 @@ namespace RecordStore.Application.Services
         {
             return await _albumRepository.FetchAllAlbumsAsync();
         }
+
+        public async Task<List<Album>> UpdateAlbumAsync(Album album)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -44,5 +44,11 @@ namespace RecordStore.Api.Controllers
 
             return CreatedAtAction("GetAlbumById", new { album.Id }, result);
         }
+
+        [HttpPut]
+        public async Task<IActionResult> PutAlbum(PutAlbumDto dto)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -37,5 +37,10 @@ namespace RecordStore.Infrastructure.Repositories
             await _db.SaveChangesAsync();
             return album;
         }
+
+        public async Task<int> UpdateAlbumAsync(Album album)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
