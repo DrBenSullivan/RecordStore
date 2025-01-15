@@ -229,5 +229,43 @@ namespace RecordStore.Tests.ControllerTests
             result?.ReleaseYear.Should().Be(existingAlbum.ReleaseYear);
             result?.Title.Should().Be(testAlbumDto.Title);
         }
+
+        [Test]
+        public async Task DeleteAlbum_AlbumDoesNotExist_ReturnsNotFoundWithExpectedErrorMessage()
+        {
+            // Arrange
+            var testId = 1;
+            var expectedErrorMessage = $"Unable to delete album. No Album with id '{testId}' exists.";
+            
+            _albumService
+                .Setup(s => s.RemoveAlbumByIdAsync(testId))
+                .ReturnsAsync(-1);
+
+            // Act
+            var actual = await _albumController.DeleteAlbum(testId);
+
+            // Assert
+            actual.Should().BeOfType<NotFoundObjectResult>();
+            var notFoundObjectResult = actual as NotFoundObjectResult;
+            var actualErrorMessage = notFoundObjectResult?.Value as string;
+            actualErrorMessage.Should().Be(expectedErrorMessage);
+        }
+
+        [Test]
+        public async Task DeleteAlbum_AlbumExists_ReturnsNoContent()
+        {
+            // Arrange
+            var testId = 1;
+
+            _albumService
+                .Setup(s => s.RemoveAlbumByIdAsync(testId))
+                .ReturnsAsync(1);
+
+            // Act
+            var actual = await _albumController.DeleteAlbum(testId);
+
+            // Assert
+            actual.Should().BeOfType<NoContentResult>();
+        }
     }
 }
