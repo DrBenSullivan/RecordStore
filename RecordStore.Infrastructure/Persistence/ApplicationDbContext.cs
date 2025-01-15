@@ -46,35 +46,28 @@ namespace RecordStore.Infrastructure.Persistence
             });
         }
 
-        internal void Seed()
+        internal async Task Seed()
         {
             var serializerOptions = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
             string basePath = "../RecordStore.Infrastructure/Resources";
 
-            var artistsJson = File.ReadAllText(Path.Combine(basePath, "ArtistSeedData.json"));
-            var artists = JsonSerializer.Deserialize<List<Artist>>(artistsJson, serializerOptions);
-            if (artists == null || !artists.Any())
-            {
-                throw new Exception("Artists data is null or empty.");
-            }
-
             var genresJson = File.ReadAllText(Path.Combine(basePath, "GenreSeedData.json"));
             var genres = JsonSerializer.Deserialize<List<Genre>>(genresJson, serializerOptions);
-            if (genres == null || !genres.Any())
-            {
-                throw new Exception("Genres data is null or empty.");
-            }
+            if (genres == null || !genres.Any()) throw new Exception("Genres data is null or empty.");
+            await Genres.AddRangeAsync(genres);
+            await SaveChangesAsync();
+
+            var artistsJson = File.ReadAllText(Path.Combine(basePath, "ArtistSeedData.json"));
+            var artists = JsonSerializer.Deserialize<List<Artist>>(artistsJson, serializerOptions);
+            if (artists == null || !artists.Any()) throw new Exception("Artists data is null or empty.");
+            await Artists.AddRangeAsync(artists);
+            await SaveChangesAsync();
 
             var albumsJson = File.ReadAllText(Path.Combine(basePath, "AlbumSeedData.json"));
             var albums = JsonSerializer.Deserialize<List<Album>>(albumsJson, serializerOptions);
-            if (albums == null || !albums.Any())
-            {
-                throw new Exception("Albums data is null or empty.");
-            }
-
-            Genres.AddRange(genres);
-            Albums.AddRange(albums);
-            Artists.AddRange(artists);
+            if (albums == null || !albums.Any()) throw new Exception("Albums data is null or empty.");
+            await Albums.AddRangeAsync(albums);
+            await SaveChangesAsync();
         }
     }
 }

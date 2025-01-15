@@ -8,11 +8,13 @@ namespace RecordStore.Api
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public async static Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddDatabase(builder.Configuration, builder.Environment);
+
+            if (builder.Environment.IsDevelopment()) await builder.Services.SeedDbIfEmptyAsync();
 
             builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
             builder.Services.AddScoped<IArtistRepository, ArtistRepository>();

@@ -1,69 +1,59 @@
 [
     {
-        "id": 1,
         "title": "Abbey Road",
         "releaseYear": 1969,
         "artistId": 1,
         "genreId": 1
     },
     {
-        "id": 2,
         "title": "Let It Be",
         "releaseYear": 1970,
         "artistId": 1,
         "genreId": 1
     },
     {
-        "id": 3,
         "title": "25",
         "releaseYear": 2015,
         "artistId": 2,
         "genreId": 2
     },
     {
-        "id": 4,
         "title": "Kind of Blue",
         "releaseYear": 1959,
         "artistId": 3,
         "genreId": 3
     },
     {
-        "id": 5,
         "title": "To Pimp a Butterfly",
         "releaseYear": 2015,
         "artistId": 4,
         "genreId": 4
     },
     {
-        "id": 6,
         "title": "Good Kid, M.A.A.D City",
         "releaseYear": 2012,
         "artistId": 4,
         "genreId": 4
     },
     {
-        "id": 7,
         "title": "Seven Days Walking: Day 1",
         "releaseYear": 2019,
         "artistId": 5,
         "genreId": 5
     },
     {
-        "id": 8,
         "title": "Seven Days Walking: Day 2",
         "releaseYear": 2019,
         "artistId": 5,
         "genreId": 5
     },
     {
-        "id": 9,
         "title": "Rumours",
         "releaseYear": 1977,
         "artistId": 1,
         "genreId": 1
     },
     {
-        "id": 10,
         "title": "21",
         "releaseYear": 2011,
         "artistId": 2,
