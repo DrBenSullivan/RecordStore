@@ -28,9 +28,12 @@ namespace RecordStore.Infrastructure.Repositories
                 .FindAsync(id);
         }
 
-        public async Task<Album?> AddAlbum(Album album)
+        public async Task<Album?> AddAlbumAsync(Album album)
         {
-            _db.Albums.Add(album);
+            if (_db.Albums.Any(a => a.Title == album.Title && a.ArtistId == album.ArtistId && a.ReleaseYear == album.ReleaseYear))
+                return null;
+
+            await _db.Albums.AddAsync(album);
             await _db.SaveChangesAsync();
             return album;
         }

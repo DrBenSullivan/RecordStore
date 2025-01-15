@@ -90,12 +90,12 @@ namespace RecordStore.Tests.ServiceTests
             // Arrange
             int dbGeneratedId = 10;
             var testAlbum = new Album { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumRepositoryMock.Setup(r => r.AddAlbum(It.IsAny<Album>()))
+            _albumRepositoryMock.Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
                 .Callback<Album>(a => a.Id = dbGeneratedId)
                 .ReturnsAsync((Album a) => a);
 
             // Act
-            var actual = await _albumService.AddAlbum(testAlbum);
+            var actual = await _albumService.AddAlbumAsync(testAlbum);
 
             // Assert
             actual?.ArtistId.Should().Be(testAlbum.ArtistId);
@@ -109,14 +109,15 @@ namespace RecordStore.Tests.ServiceTests
         public async Task AddAlbum_AlreadyExists_ReturnsNull()
         {
             // Arrange
+            Album? expected = null;
             var testAlbum = new Album { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            _albumRepositoryMock.Setup(r => r.AddAlbum(It.IsAny<Album>())).Throws<DbUpdateException>();
+            _albumRepositoryMock.Setup(r => r.AddAlbumAsync(testAlbum)).ReturnsAsync(expected);
 
             // Act
-            var action = async () => await _albumService.AddAlbum(testAlbum);
+            var actual = await _albumService.AddAlbumAsync(testAlbum);
 
             // Assert
-            await action.Should().ThrowAsync<DbUpdateException>();
+            actual.Should().BeNull();
         }
     }
 }

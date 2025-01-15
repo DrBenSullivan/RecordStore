@@ -13,9 +13,9 @@ namespace RecordStore.Application.Services
             _albumRepository = albumRepository;
         }
 
-        public async Task<Album?> AddAlbum(Album album)
+        public async Task<Album?> AddAlbumAsync(Album album)
         {
-            return await _albumRepository.AddAlbum(album);
+            return await _albumRepository.AddAlbumAsync(album);
         }
 
         public async Task<Album?> FindAlbumByIdAsync(int id)

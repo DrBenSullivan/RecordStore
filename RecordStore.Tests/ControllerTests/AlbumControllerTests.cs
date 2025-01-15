@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using RecordStore.Api.Controllers;
+using RecordStore.Api.Dtos;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Core.Models;
 
@@ -97,6 +98,43 @@ namespace RecordStore.Tests.ControllerTests
             notFoundObjectResult?.Value.Should().BeOfType<Album>();
             var result = notFoundObjectResult?.Value as Album;
             result.Should().BeEquivalentTo(testAlbum);
+        }
+
+        [Test]
+        public async Task PostAlbum_ValidAlbum_ReturnsCreatedAt()
+        {
+            // Arrange
+            var testId = 1;
+            var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
+            _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<Album>()))
+                .Callback<Album>(a => a.Id = testId)
+                .ReturnsAsync((Album a) => a);
+            var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear, Title = testAlbumDto.Title };
+
+            // Act
+            var actual = await _albumController.PostAlbum(testAlbumDto);
+
+            // Assert
+            actual.Should().BeOfType<CreatedAtActionResult>();
+            var createdAtActionResult = actual as CreatedAtActionResult;
+            createdAtActionResult?.Value.Should().BeOfType<Album>();
+            var result = createdAtActionResult?.Value as Album;
+            result.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public async Task PostAlbum_AlbumAlreadyExists_ReturnsConflict()
+        {
+            // Arrange
+            Album? expected = null;
+            var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
+            _albumService.Setup(s => s.AddAlbumAsync(It.IsAny<Album>())).ReturnsAsync(expected);
+
+            // Act
+            var actual = await _albumController.PostAlbum(testAlbumDto);
+
+            // Assert
+            actual.Should().BeOfType<ConflictResult>();
         }
     }
 }

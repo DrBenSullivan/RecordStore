@@ -28,6 +28,7 @@ namespace RecordStore.Infrastructure.Persistence
                 entity.HasOne(a => a.Artist).WithMany().HasForeignKey(a => a.ArtistId).OnDelete(DeleteBehavior.Cascade);
                 entity.Property(a => a.GenreId).IsRequired(false);
                 entity.HasOne(a => a.Genre).WithMany().HasForeignKey(a => a.GenreId).OnDelete(DeleteBehavior.SetNull);
+                entity.HasIndex(a => new { a.Title, a.ReleaseYear, a.ArtistId }).IsUnique();
             });
 
             modelBuilder.Entity<Artist>(entity =>
