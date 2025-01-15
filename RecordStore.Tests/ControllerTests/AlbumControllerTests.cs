@@ -116,7 +116,7 @@ namespace RecordStore.Tests.ControllerTests
             // Arrange
             var testId = 1;
             var testAlbumDto = new PostAlbumDto { ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year, Title = "TestAlbum1" };
-            var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear, Title = testAlbumDto.Title };
+            var expected = new Album { Id = testId, ArtistId = testAlbumDto.ArtistId.Value, GenreId = testAlbumDto.GenreId, ReleaseYear = testAlbumDto.ReleaseYear.Value, Title = testAlbumDto.Title };
 
             _albumService
                 .Setup(s => s.AddAlbumAsync(It.IsAny<PostAlbumDto>()))

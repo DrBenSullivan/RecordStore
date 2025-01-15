@@ -7,9 +7,9 @@ namespace RecordStore.Application.Extensions
     {
         public static Album ToAlbum(this PostAlbumDto dto) => new()
         {
-            Title = dto.Title,
-            ArtistId = dto.ArtistId,
-            ReleaseYear = dto.ReleaseYear,
+            Title = dto.Title!,
+            ArtistId = dto.ArtistId!.Value,
+            ReleaseYear = dto.ReleaseYear!.Value,
             GenreId = dto.GenreId
         };
     }

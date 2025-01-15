@@ -102,7 +102,7 @@ namespace RecordStore.Tests.ServiceTests
 
             _albumRepositoryMock
                 .Setup(r => r.AddAlbumAsync(It.IsAny<Album>()))
-                .ReturnsAsync((Album a) => 
+                .ReturnsAsync((Album a) =>
                 {
                     a.Id = dbGeneratedId;
                     return a;

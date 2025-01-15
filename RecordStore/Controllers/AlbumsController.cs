@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using RecordStore.Api.Extensions;
+using RecordStore.Application.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Shared.Dtos;
 
