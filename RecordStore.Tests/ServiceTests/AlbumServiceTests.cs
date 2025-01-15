@@ -119,5 +119,48 @@ namespace RecordStore.Tests.ServiceTests
             // Assert
             actual.Should().BeNull();
         }
+
+        [Test]
+        public async Task PutAlbum_ValidProperties_ReturnsUpdatedAlbum()
+        {
+            // Arrange
+            var testId = 1;
+            var testAlbumDto = new PutAlbumDto { Title = "NewTestTitle" };
+            var existingAlbum = new Album { Id = testId, Title = "TestTile1", ArtistId = 1, GenreId = 1, ReleaseYear = DateTime.UtcNow.Year };
+            _albumRepositoryMock
+                .Setup(r => r.UpdateAlbumAsync(It.IsAny<Album>()))
+                .ReturnsAsync((Album a) =>
+                {
+                    existingAlbum.Title = a.Title;
+                    return existingAlbum;
+                });
+
+            // Act
+            var result = await _albumService.UpdateAlbumAsync(testId, testAlbumDto);
+
+            // Asset
+            result.Title.Should().Be(testAlbumDto.Title);
+            result.Id.Should().Be(existingAlbum.Id);
+            result.ArtistId.Should().Be(existingAlbum.ArtistId);
+            result.GenreId.Should().Be(existingAlbum.GenreId);
+            result.ReleaseYear.Should().Be(existingAlbum.ReleaseYear);
+        }
+
+        [Test]
+        public async Task PutAlbum_AlbumDoesNotExist_ReturnsNull()
+        {
+            // Arrange
+            var testId = 1;
+            var testAlbumDto = new PutAlbumDto() { Title = "NewTestTitle" };
+            _albumRepositoryMock
+                .Setup(r => r.FetchAlbumByIdAsync(testId))
+                .ReturnsAsync((Album a) => null);
+
+            // Act
+            var result = await _albumService.UpdateAlbumAsync(testId, testAlbumDto);
+
+            // Assert
+            result.Should().BeNull();
+        }
     }
 }

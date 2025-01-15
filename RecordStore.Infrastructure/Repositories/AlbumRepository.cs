@@ -38,7 +38,7 @@ namespace RecordStore.Infrastructure.Repositories
             return album;
         }
 
-        public async Task<int> UpdateAlbumAsync(Album album)
+        public async Task<Album?> UpdateAlbumAsync(Album album)
         {
             throw new NotImplementedException();
         }
