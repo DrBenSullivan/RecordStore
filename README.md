@@ -32,7 +32,7 @@ RecordStore was developed as a solo project during Northcoders software developm
 
 ---
 
-### Prerequisites
+## Prerequisites
 - [.NET 8.0 SDK](https://dotnet.microsoft.com/download/dotnet/8.0)
 - [SQL Server](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 
@@ -79,9 +79,9 @@ The API will be accessible at http://localhost:5034
 
 ---
 
-### Endpoints
+## Endpoints
 
-#### Resource: Albums
+### Resource: Albums
 
 | HTTP Method | Endpoint           | Description        |
 |-------------|--------------------|--------------------|
@@ -91,7 +91,7 @@ The API will be accessible at http://localhost:5034
 | `PUT`       | `/api/albums/{id}` | Update album by ID |
 | `DELETE`    | `/api/albums/{id}` | Delete album by ID |
 
-#### Resource: Artists
+### Resource: Artists
 
 | HTTP Method | Endpoint                   | Description                 |
 |-------------|----------------------------|-----------------------------|
@@ -99,7 +99,7 @@ The API will be accessible at http://localhost:5034
 | `GET`       | `/api/artists/{id}`        | Get artist by ID            |
 | `GET`       | `/api/artists/{id}/albums` | Get all albums by artist ID |
 
-#### Resource: Genres
+### Resource: Genres
 
 | HTTP Method | Endpoint           | Description     |
 |-------------|--------------------|-----------------|
@@ -108,9 +108,9 @@ The API will be accessible at http://localhost:5034
 
 ---
 
-#### Example Endpoint Usage
+### Example Endpoint Usage
 
-##### Get Album by ID
+#### Get Album by ID
 **Request:**
 ```pwsh
 Invoke-RestMethod -Uri "http://localhost:5034/api/albums/1" -Method Get
@@ -128,7 +128,7 @@ Invoke-RestMethod -Uri "http://localhost:5034/api/albums/1" -Method Get
 }
 ```
 
-##### Post Album
+#### Post Album
 **Required Fields for POST:**
 - `title` (string): The title of the album.
 - `artistId` (integer): The ID of the artist (must exist in the database).
@@ -159,7 +159,7 @@ Invoke-RestMethod -Uri "http://localhost:5034/api/albums" -Method Post -Body @{
 
 ---
 
-### License
+## License
 This project is licensed under the [MIT License](./LICENSE.txt).
 
 ---
