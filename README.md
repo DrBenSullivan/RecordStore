@@ -165,12 +165,15 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 ---
 
 1. **Error Handling**:
-   - Implement comprehensive error responses (e.g., 404 for missing records, 400 for invalid input).
+   - Implement comprehensive error responses (e.g., 404 for missing records, 400 for invalid input)
 2. **Get Albums by Genre**:
-   - Create an endpoint `/api/genres/{id}/albums` to retrieve all albums for a specific genre.
+   - Create an endpoint `/api/genres/{id}/albums` to retrieve all albums for a specific genre
 3. **Search Albums by Title**:
    - Add a query parameter `/api/albums?title=Abbey%20Road`.
-4. **Swagger documentation**:
-   - Add XML documentation for Swagger UI.
+4. **Swagger Documentation**:
+   - Add XML documentation for Swagger UI
+5. **Improve Unit Test Coverage & Integration Tests**
+   - Cover all endpoints with unit tests
+   - Implement integration tests
 
 
