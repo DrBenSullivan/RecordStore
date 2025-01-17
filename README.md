@@ -160,7 +160,7 @@ Invoke-RestMethod -Uri "http://localhost:5034/api/albums" -Method Post -Body @{
 ---
 
 ### License
-This project is licensed under the [MIT License](./LICENSE.md).
+This project is licensed under the [MIT License](./LICENSE.txt).
 
 ---
 
