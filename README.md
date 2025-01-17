@@ -108,6 +108,24 @@ The API will be accessible at http://localhost:5034
 
 ---
 
+#### Query Parameters for `GET /api/albums`
+
+The `GET /api/albums` endpoint supports optional query parameters to filter the list of albums. These parameters can be combined to customise the results.
+
+#### Query Parameters:
+
+| Parameter    | Type    | Description                                                                   |
+|--------------|---------|-------------------------------------------------------------------------------|
+| `inStock`    | `bool`  | Filter albums by stock availability (`true` for in-stock, `false` otherwise). |
+| `releaseYear`| `int`   | Filter albums by their release year.                                          |
+| `genreId`    | `int`   | Filter albums by their genre ID.                                              |
+
+#### Usage:
+
+The query parameters are optional. If no query parameters are provided, the endpoint returns all albums.
+
+---
+
 ### Example Endpoint Usage
 
 #### Get Album by ID
@@ -166,8 +184,8 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 
 1. **Error Handling**:
    - Implement comprehensive error responses (e.g., 404 for missing records, 400 for invalid input)
-2. **Get Albums by Genre**:
-   - Create an endpoint `/api/genres/{id}/albums` to retrieve all albums for a specific genre
+2. **Get Album by Title**:
+   - Add further filtering query parameter to endpoint `/api/albums` to retrieve albums with a given title
 3. **Search Albums by Title**:
    - Add a query parameter `/api/albums?title=Abbey%20Road`.
 4. **Swagger Documentation**:
