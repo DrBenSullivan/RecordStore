@@ -182,6 +182,8 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 
 ---
 
+## To-Do
+
 1. **Error Handling**:
    - Implement comprehensive error responses (e.g., 404 for missing records, 400 for invalid input)
 2. **Get Album by Title**:
