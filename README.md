@@ -1,4 +1,6 @@
-# ASP.NET Web API Project
+# ASP.NET RecordStore Web API
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -158,7 +160,7 @@ Invoke-RestMethod -Uri "http://localhost:5034/api/albums" -Method Post -Body @{
 ---
 
 ### License
-This project is licensed under the [MIT License](./LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
 ---
 
