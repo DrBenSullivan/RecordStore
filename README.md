@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-# RecordStore
-=======
 # ASP.NET RecordStore Web API
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -198,4 +195,3 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 5. **Improve Unit Test Coverage & Integration Tests**
    - Cover all endpoints with unit tests
    - Implement integration tests
->>>>>>> Stashed changes
