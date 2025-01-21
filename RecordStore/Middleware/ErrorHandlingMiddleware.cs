@@ -30,6 +30,7 @@ namespace RecordStore.Api.Middleware
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsJsonAsync(response);
+                context.Response.StatusCode = 422;
             }
         }
     }
