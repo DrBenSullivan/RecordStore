@@ -2,9 +2,9 @@
 
 namespace RecordStore.Core.Interfaces.ServiceInterfaces
 {
-    public interface IGenreService
-    {
-        public Task<GenreResponseDto?> FindGenreByIdAsync(int id);
-        public Task<List<GenreResponseDto>> FindAllGenresAsync();
-    }
+	public interface IGenreService
+	{
+		public Task<GenreResponseDto?> FindGenreByIdAsync(int id);
+		public Task<List<GenreResponseDto>> FindAllGenresAsync();
+	}
 }

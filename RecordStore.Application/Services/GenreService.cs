@@ -5,29 +5,29 @@ using RecordStore.Shared.Dtos.GenreDtos;
 
 namespace RecordStore.Application.Services
 {
-    public class GenreService : IGenreService
-    {
-        private readonly IGenreRepository _genreRepository;
+	public class GenreService : IGenreService
+	{
+		private readonly IGenreRepository _genreRepository;
 
-        public GenreService(IGenreRepository genreRepository)
-        {
-            _genreRepository = genreRepository;
-        }
+		public GenreService(IGenreRepository genreRepository)
+		{
+			_genreRepository = genreRepository;
+		}
 
-        public async Task<List<GenreResponseDto>> FindAllGenresAsync()
-        {
-            var genres = await _genreRepository.FetchAllGenresAsync();
+		public async Task<List<GenreResponseDto>> FindAllGenresAsync()
+		{
+			var genres = await _genreRepository.FetchAllGenresAsync();
 
-            return genres.Select(g => g.ToGenreResponseDto()).ToList();
-        }
+			return genres.Select(g => g.ToGenreResponseDto()).ToList();
+		}
 
-        public async Task<GenreResponseDto?> FindGenreByIdAsync(int id)
-        {
-            var genre = await _genreRepository.FetchGenreByIdAsync(id);
+		public async Task<GenreResponseDto?> FindGenreByIdAsync(int id)
+		{
+			var genre = await _genreRepository.FetchGenreByIdAsync(id);
 
-            if (genre == null) return null;
+			if (genre == null) return null;
 
-            return genre.ToGenreResponseDto();
-        }
-    }
+			return genre.ToGenreResponseDto();
+		}
+	}
 }
