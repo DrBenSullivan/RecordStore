@@ -1,5 +1,4 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 
 namespace RecordStore.Api.Middleware
 {
@@ -10,27 +9,32 @@ namespace RecordStore.Api.Middleware
             try
             {
                 await next.Invoke(context);
-            }
-            catch (Exception ex) when (ex.InnerException is SqlException e && e.Number == 2601)
-            {
-                var errorMessage = e.Message;
-                var entityMatch = Regex.Match(errorMessage, @"(?:'dbo\.)(\w+)(?:s')");
-                var entity = entityMatch.Groups[1].Value;
-                var valuesMatch = Regex.Match(errorMessage, @"\(.+\)");
-                var values = valuesMatch.Groups[0].Value;
-                var details = $"{entity} with values {values} already exists in the database.";
 
-                var response = new
+            }
+            catch (Exception ex) when (ex.InnerException is SqlException e && (e.Number == 2601 || e.Number == 2627))
+            {
+                // Unique index violation
+                var errorMessage = "An entry with the given key values already exists in the database.";
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(errorMessage);
+            }
+            catch (Exception ex) when (ex.InnerException is SqlException e && e.Number == 547)
+            {
+                // Foreign key violation
+                var errorMessage = "The entry contained unrecognised values. Please try again.";
+                context.Response.StatusCode = StatusCodes.Status400BadRequest;
+                await context.Response.WriteAsJsonAsync(errorMessage);
+            }
+            catch (Exception ex) when (ex.InnerException is SqlException e)
+            {
+                context.Response.StatusCode = e.Number switch
                 {
-                    message = $"Unable to add {entity} to the database.",
-                    detail = details
+                    53 => StatusCodes.Status503ServiceUnavailable,  // Unreachable db
+                    18456 => StatusCodes.Status401Unauthorized,     // Failed login
+                    _ => StatusCodes.Status500InternalServerError   // Default
                 };
 
-                context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                context.Response.ContentType = "application/json";
-
-                await context.Response.WriteAsJsonAsync(response);
-                context.Response.StatusCode = 422;
+                await context.Response.WriteAsync("A database error occurred. Please try again later.");
             }
         }
     }

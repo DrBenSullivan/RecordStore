@@ -24,7 +24,10 @@ namespace RecordStore.Infrastructure.Extensions
                 connectionString = configuration.GetConnectionString("DefaultConnection")
                     ?? throw new ApplicationException($"No 'DefaultConnection' connection string found in configuration. Environment = '{environment.EnvironmentName}'");
 
-            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<ApplicationDbContext>(options => 
+            {
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly("RecordStore.Api"));
+            });
 
             return services;
         }

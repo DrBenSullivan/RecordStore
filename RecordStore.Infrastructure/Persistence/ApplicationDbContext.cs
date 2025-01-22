@@ -25,6 +25,7 @@ namespace RecordStore.Infrastructure.Persistence
                 entity.Property(artist => artist.Id).ValueGeneratedOnAdd();
                 entity.HasKey(artist => artist.Id);
                 entity.Property(artist => artist.Name).IsRequired().HasMaxLength(255);
+                entity.HasIndex(artist => artist.Name).IsUnique(true);
             });
 
             modelBuilder.Entity<Genre>(entity =>
@@ -32,6 +33,7 @@ namespace RecordStore.Infrastructure.Persistence
                 entity.Property(genre => genre.Id).ValueGeneratedOnAdd();
                 entity.HasKey(genre => genre.Id);
                 entity.Property(genre => genre.Name).IsRequired().HasMaxLength(255);
+                entity.HasIndex(genre => genre.Name).IsUnique(true);
             });
 
             modelBuilder.Entity<Album>(entity =>
