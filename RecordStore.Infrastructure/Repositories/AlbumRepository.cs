@@ -22,23 +22,17 @@ namespace RecordStore.Infrastructure.Repositories
 
         public async Task<Album?> FetchAlbumByIdAsync(int id)
         {
-            return await GetAlbumsWithIncludedRelations().FirstOrDefaultAsync(a => a.Id == id);
+            return await GetAlbumsWithIncludedRelations()
+                .FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<Album?> AddAlbumAsync(Album album)
         {
-            //var existingAlbum = await _db.Albums
-            //    .FirstOrDefaultAsync(a =>
-            //        a.Title == album.Title &&
-            //        a.ArtistId == album.ArtistId &&
-            //        a.ReleaseYear == album.ReleaseYear);
-
-            //if (existingAlbum != null) return null;
-
             await _db.Albums.AddAsync(album);
             await _db.SaveChangesAsync();
 
-            return await GetAlbumsWithIncludedRelations().FirstOrDefaultAsync(a => a.Id == album.Id);
+            return await GetAlbumsWithIncludedRelations()
+                .FirstOrDefaultAsync(a => a.Id == album.Id);
         }
 
         public async Task<Album?> UpdateAlbumAsync(Album album)
@@ -51,7 +45,8 @@ namespace RecordStore.Infrastructure.Repositories
 
             await _db.SaveChangesAsync();
 
-            return await GetAlbumsWithIncludedRelations().FirstOrDefaultAsync(a => a.Id == album.Id);
+            return await GetAlbumsWithIncludedRelations()
+                .FirstOrDefaultAsync(a => a.Id == album.Id);
         }
 
         public async Task<int> RemoveAlbumByIdAsync(int id)
@@ -86,6 +81,9 @@ namespace RecordStore.Infrastructure.Repositories
 
             if (filterOptions.GenreId.HasValue)
                 albums = albums.Where(a => a.GenreId == filterOptions.GenreId);
+
+            if (!string.IsNullOrEmpty(filterOptions.AlbumTitle))
+                albums = albums.Where(a => a.Title == filterOptions.AlbumTitle);
 
             return await albums.ToListAsync();
         }

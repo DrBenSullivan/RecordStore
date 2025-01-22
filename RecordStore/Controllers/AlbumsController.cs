@@ -20,13 +20,15 @@ namespace RecordStore.Api.Controllers
         public async Task<IActionResult> GetAllAlbums(
             [FromQuery] bool? inStock = null,
             [FromQuery] int? releaseYear = null,
-            [FromQuery] int? genreId = null)
+            [FromQuery] int? genreId = null,
+            [FromQuery] string? albumTitle = null)
         {
             AlbumFilterOptionsDto filterOptions = new()
             {
                 InStock = inStock,
                 ReleaseYear = releaseYear,
-                GenreId = genreId
+                GenreId = genreId,
+                AlbumTitle = albumTitle
             };
 
             var result = await _albumService.FindAlbumsAsync(filterOptions);
