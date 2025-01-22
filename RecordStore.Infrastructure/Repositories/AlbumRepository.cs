@@ -27,13 +27,13 @@ namespace RecordStore.Infrastructure.Repositories
 
         public async Task<Album?> AddAlbumAsync(Album album)
         {
-            var existingAlbum = await _db.Albums
-                .FirstOrDefaultAsync(a =>
-                    a.Title == album.Title &&
-                    a.ArtistId == album.ArtistId &&
-                    a.ReleaseYear == album.ReleaseYear);
+            //var existingAlbum = await _db.Albums
+            //    .FirstOrDefaultAsync(a =>
+            //        a.Title == album.Title &&
+            //        a.ArtistId == album.ArtistId &&
+            //        a.ReleaseYear == album.ReleaseYear);
 
-            if (existingAlbum != null) return null;
+            //if (existingAlbum != null) return null;
 
             await _db.Albums.AddAsync(album);
             await _db.SaveChangesAsync();

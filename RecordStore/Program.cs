@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Builder;
+using RecordStore.Api.Middleware;
 using RecordStore.Application.Services;
 using RecordStore.Core.Interfaces.RepositoryInterfaces;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
@@ -27,6 +29,7 @@ namespace RecordStore.Api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddTransient<ErrorHandlingMiddleware>();
 
             var app = builder.Build();
 
@@ -35,6 +38,8 @@ namespace RecordStore.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseMiddleware<ErrorHandlingMiddleware>();
 
             app.UseAuthorization();
 

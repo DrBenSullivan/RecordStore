@@ -195,5 +195,3 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 5. **Improve Unit Test Coverage & Integration Tests**
    - Cover all endpoints with unit tests
    - Implement integration tests
-
-
