@@ -1,0 +1,32 @@
+﻿@using System.Text.Json
+
+<MudContainer Class="d-flex justify-space-evenly my-auto" Style="min-height: auto;">
+
+	@if (albums != null && albums.Count == 0)
+	{
+		<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Class="ma-auto c"/>
+	}
+
+	else if (albums != null && albums.Count > 0)
+	{
+		<AlbumCardList AlbumsList="albums" />
+	}
+
+	else
+	{
+		<MudText Typo="Typo.h5" Align="Align.Center">There was an error while getting the album data.<br /><br />Please try again later...</MudText>
+	}
+
+</MudContainer>
+
+@code {
+	private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+	private List<AlbumResponseDto>? albums = [];
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var client = new HttpClient();
+		client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
+		albums = await client.GetFromJsonAsync<List<AlbumResponseDto>>(new Uri("http://localhost:5034/api/albums"), _options);
+	}
+}

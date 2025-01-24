@@ -1,0 +1,15 @@
+﻿<MudGrid>
+
+@foreach (var album in AlbumsList)
+{
+	<MudItem>
+		<AlbumCard AlbumData="album" />
+	</MudItem>
+}
+
+</MudGrid>
+
+@code {
+	[Parameter]
+	public List<AlbumResponseDto> AlbumsList { get; set; } = [];
+}

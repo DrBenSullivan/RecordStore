@@ -5,24 +5,31 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudLayout>
+<MudContainer Class="mud-width-full">
+    <MudLayout Class="mud-width-full">
 
-    <MudAppBar Elevation="1">
-        <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
-        <MudText Typo="Typo.h5" Class="ml-3">Record Store</MudText>
-        <MudSpacer />
-        <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
-    </MudAppBar>
+        <MudAppBar Elevation="1">
+            <MudIconButton Icon="@Icons.Material.Filled.Menu" Color="Color.Inherit" Edge="Edge.Start" OnClick="@((e) => DrawerToggle())" />
+            <MudText Typo="Typo.h5" Class="ml-3">Record Store</MudText>
+            <MudSpacer />
+            <MudIconButton Icon="@(DarkLightModeButtonIcon)" Color="Color.Inherit" OnClick="@DarkModeToggle" />
+        </MudAppBar>
 
-    <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Width="30%">
-        <NavMenu />
-    </MudDrawer>
+        <MudDrawer @bind-Open="_drawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2">
+            <NavMenu />
+        </MudDrawer>
 
-    <MudMainContent Class="mt-16 pa-4">
-        @Body
-    </MudMainContent>
+        <MudMainContent Class="mt-16 pl-4 pt-4 pr-4 pb-0 mb-0 d-flex flex-nowrap flex-column justify-space-between xp">
+            <MudContainer Style="max-height: 100%" Class="mud-height-full">
+                @Body
+            </MudContainer>
 
-</MudLayout>
+        </MudMainContent>
+
+    </MudLayout>
+
+</MudContainer>
+<Footer />
 
 
 <div id="blazor-error-ui" data-nosnippet>
@@ -61,23 +68,27 @@
 
     private readonly PaletteLight _lightPalette = new()
     {
+        Primary = "#e8e8e8",
         Black = "#110e2d",
-        AppbarText = "#424242",
-        AppbarBackground = "rgba(255,255,255,0.8)",
-        DrawerBackground = "#ffffff",
+        AppbarText = "#ffffff",
+        AppbarBackground = "#520000",
+        DrawerBackground = "#9c3e3e",
+        DrawerText = "#ffffff",
+        DrawerIcon = "#ffffff",
         GrayLight = "#e8e8e8",
         GrayLighter = "#f9f9f9",
+        Surface = "#520000",
     };
 
     private readonly PaletteDark _darkPalette = new()
     {
         Primary = "#7e6fff",
         Surface = "#1e1e2d",
-        Background = "#1a1a27",
+        Background = "#232330",
         BackgroundGray = "#151521",
         AppbarText = "#92929f",
-        AppbarBackground = "rgba(26,26,39,0.8)",
-        DrawerBackground = "#1a1a27",
+        AppbarBackground = "rgb(26,26,39)",
+        DrawerBackground = "#0f0f1a",
         ActionDefault = "#74718e",
         ActionDisabled = "#9999994d",
         ActionDisabledBackground = "#605f6d4d",

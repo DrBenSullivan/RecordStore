@@ -1,0 +1,24 @@
+﻿<MudCard Class="ma-2 pa-2" Style="width: fit-content">
+
+	<MudCardHeader>
+		<MudText Typo="Typo.h5">@AlbumData.AlbumTitle</MudText>
+	</MudCardHeader>
+
+	<MudCardContent>
+		<MudText Typo="Typo.body2"><strong>Artist:</strong> @AlbumData.Artist</MudText>
+		<MudText Typo="Typo.body2"><strong>Year:</strong> @AlbumData.ReleaseYear</MudText>
+
+		@if (AlbumData.Genre != null)
+		{
+			<MudText Typo="Typo.body2"><strong>Genre:</strong> @AlbumData.Genre</MudText>
+		}
+
+		<MudText Typo="Typo.body2"><strong>Stock:</strong> @AlbumData.StockQuantity</MudText>
+	</MudCardContent>
+
+</MudCard>
+
+@code {
+	[Parameter]
+	public AlbumResponseDto AlbumData { get; set; } = null!;
+}

@@ -13,4 +13,10 @@
     <PackageReference Include="MudBlazor" Version="8.*" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="Pages\Albums.razor">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+    </Content>
+  </ItemGroup>
+
 </Project>

@@ -1,7 +1,9 @@
-﻿
-<MudNavMenu Dense="false">
+﻿<MudNavMenu Dense="false" Rounded="true">
     <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
-    <MudNavLink Href="/albums" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Outlined.Album">Albums</MudNavLink>
+
+    <MudNavGroup Title="Albums" Expanded="true" Icon="@Icons.Material.Filled.Album">
+        <MudNavLink Href="/albums" Match="NavLinkMatch.All" Icon="@Icons.Material.Outlined.Album">Browse All</MudNavLink>
+    </MudNavGroup>
 </MudNavMenu>
 
 
