@@ -1,0 +1,14 @@
+﻿<MudCard Class="ma-2 pa-2" Style="width: fit-content">
+
+	<MudCardContent>
+		<MudText Typo="Typo.h5">@AlbumData.AlbumTitle</MudText>
+		<br />
+		<MudText Typo="Typo.body2"><em>@AlbumData.Artist (@AlbumData.ReleaseYear)</em></MudText>
+	</MudCardContent>
+
+</MudCard>
+
+@code {
+	[Parameter]
+	public Album AlbumData { get; set; } = null!;
+}

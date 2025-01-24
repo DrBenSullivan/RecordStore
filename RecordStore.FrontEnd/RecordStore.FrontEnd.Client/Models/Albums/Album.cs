@@ -1,6 +1,6 @@
-﻿namespace RecordStore.FrontEnd.Client.Models.AlbumDtos
+﻿namespace RecordStore.FrontEnd.Client.Models.Albums
 {
-	public class AlbumResponseDto
+	public class Album
 	{
 		public int AlbumId { get; set; }
 		public string AlbumTitle { get; set; } = string.Empty;

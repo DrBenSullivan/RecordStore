@@ -21,12 +21,12 @@
 
 @code {
 	private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
-	private List<AlbumResponseDto>? albums = [];
+	private List<Album>? albums = [];
 
 	protected override async Task OnInitializedAsync()
 	{
 		using var client = new HttpClient();
 		client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
-		albums = await client.GetFromJsonAsync<List<AlbumResponseDto>>(new Uri("http://localhost:5034/api/albums"), _options);
+		albums = await client.GetFromJsonAsync<List<Album>>(new Uri("http://localhost:5034/api/albums"), _options);
 	}
 }

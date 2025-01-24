@@ -1,6 +1,6 @@
-﻿namespace RecordStore.FrontEnd.Client.Models.GenreDtos
+﻿namespace RecordStore.FrontEnd.Client.Models.Genres
 {
-	public class GenreResponseDto
+	public class Genre
 	{
 		public int GenreId { get; set; }
 		public string GenreName { get; set; } = string.Empty;
