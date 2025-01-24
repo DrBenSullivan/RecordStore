@@ -11,5 +11,6 @@ namespace RecordStore.Core.Interfaces.RepositoryInterfaces
 		Task<Album?> UpdateAlbumAsync(Album album);
 		Task<int> RemoveAlbumByIdAsync(int id);
 		Task<List<Album>> FetchAlbumsAsync(AlbumFilterOptionsDto? filterOptions = null);
+		Task<Album?> UpdateAlbumDetailsAsync(AlbumDetailsDto albumDetailsDto);
 	}
 }

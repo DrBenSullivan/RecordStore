@@ -15,7 +15,17 @@ namespace RecordStore.Api
 
 			builder.Services.AddDatabase(builder.Configuration, builder.Environment);
 
-			if (builder.Environment.IsDevelopment()) await builder.Services.SeedDbAsync();
+			if (builder.Environment.IsDevelopment())
+			{
+				await builder.Services.SeedDbAsync();
+				builder.Services.AddCors(options =>
+				{
+					options.AddPolicy("AllowLocalhost",
+						policy => policy.WithOrigins("http://localhost:5191")
+										.AllowAnyMethod()
+										.AllowAnyHeader());
+				});
+			}
 
 			builder.Services.AddScoped<IAlbumRepository, AlbumRepository>();
 			builder.Services.AddScoped<IArtistRepository, ArtistRepository>();
@@ -30,15 +40,18 @@ namespace RecordStore.Api
 			builder.Services.AddSwaggerGen();
 			builder.Services.AddTransient<ErrorHandlingMiddleware>();
 
+
 			var app = builder.Build();
+
+			app.UseMiddleware<ErrorHandlingMiddleware>();
 
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseSwagger();
 				app.UseSwaggerUI();
+				app.UseCors("AllowLocalHost");
 			}
 
-			app.UseMiddleware<ErrorHandlingMiddleware>();
 
 			app.UseAuthorization();
 

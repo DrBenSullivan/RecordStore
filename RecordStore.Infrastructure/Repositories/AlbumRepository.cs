@@ -88,6 +88,44 @@ namespace RecordStore.Infrastructure.Repositories
 			return await albums.ToListAsync();
 		}
 
+		public async Task<Album?> UpdateAlbumDetailsAsync(AlbumDetailsDto albumDetailsDto)
+		{
+			var existingAlbum = await FetchAlbumByIdAsync(albumDetailsDto.Id);
+
+			if (existingAlbum == null) return null;
+
+			existingAlbum.Title = albumDetailsDto.Title;
+			existingAlbum.ReleaseYear = albumDetailsDto.ReleaseYear;
+			existingAlbum.Stock!.Quantity = albumDetailsDto.Stock;
+
+			if (existingAlbum.Artist!.Name != albumDetailsDto.ArtistName)
+			{
+				var updatedArtist = await _db.Artists.FirstOrDefaultAsync(a => a.Name == albumDetailsDto.ArtistName);
+
+				if (updatedArtist == null) return null;
+
+				existingAlbum.ArtistId = updatedArtist.Id;
+			}
+
+			if (existingAlbum.Genre!.Name != albumDetailsDto.GenreName && !string.IsNullOrEmpty(albumDetailsDto.GenreName))
+			{
+				var updatedGenre = await _db.Genres.FirstOrDefaultAsync(g => g.Name == albumDetailsDto.GenreName);
+
+				if (updatedGenre == null)
+				{
+					updatedGenre = new Genre() { Name = albumDetailsDto.GenreName };
+					await _db.Genres.AddAsync(updatedGenre!);
+				}
+				
+				existingAlbum.GenreId = updatedGenre.Id;
+				existingAlbum.Genre = updatedGenre;
+			}
+
+			await _db.SaveChangesAsync();
+
+			return existingAlbum;
+		}
+
 		private IQueryable<Album> GetAlbumsWithIncludedRelations()
 		{
 			return _db.Albums

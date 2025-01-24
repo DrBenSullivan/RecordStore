@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using RecordStore.Api.Extensions;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 using RecordStore.Shared.Dtos.AlbumDtos;
@@ -6,6 +7,7 @@ using RecordStore.Shared.Dtos.AlbumDtos;
 namespace RecordStore.Api.Controllers
 {
 	[ApiController]
+	[EnableCors("AllowLocalhost")]
 	[Route("api/[controller]")]
 	public class AlbumsController : ControllerBase
 	{
@@ -76,6 +78,26 @@ namespace RecordStore.Api.Controllers
 			if (result == -1) return NotFound($"Unable to delete album. No Album with id '{albumId}' exists.");
 
 			return NoContent();
+		}
+
+		[HttpGet("{albumId}/details")]
+		public async Task<IActionResult> GetAlbumDetailsById(int albumId)
+		{
+			var result = await _albumService.FindAlbumDetailsById(albumId);
+
+			if (result == null) return NotFound($"The album with id '{albumId}' could not be found.");
+
+			return Ok(result);
+		}
+
+		[HttpPut("details")]
+		public async Task<IActionResult> PutAlbumDetailsById(AlbumDetailsDto updatedDetails)
+		{
+			var result = await _albumService.UpdateAlbumDetailsAsync(updatedDetails);
+
+			if (result == null) return BadRequest($"An error occurred while trying to update the Album Details. Please try again later.");
+
+			return Accepted(result);
 		}
 	}
 }

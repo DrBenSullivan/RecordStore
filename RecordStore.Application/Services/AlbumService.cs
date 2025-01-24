@@ -13,6 +13,7 @@ namespace RecordStore.Application.Services
 		{
 			_albumRepository = albumRepository;
 		}
+
 		public async Task<List<AlbumResponseDto>> FindAlbumsAsync(AlbumFilterOptionsDto? albumFilterOptionsDto = null)
 		{
 			var albums = await _albumRepository.FetchAlbumsAsync(albumFilterOptionsDto);
@@ -58,6 +59,24 @@ namespace RecordStore.Application.Services
 		public async Task<int> RemoveAlbumByIdAsync(int albumId)
 		{
 			return await _albumRepository.RemoveAlbumByIdAsync(albumId);
+		}
+
+		public async Task<AlbumDetailsDto?> FindAlbumDetailsById(int albumId)
+		{
+			var result = await _albumRepository.FetchAlbumByIdAsync(albumId);
+
+			if (result == null) return null;
+
+			return result.ToAlbumDetailsDto();
+		}
+
+		public async Task<AlbumDetailsDto?> UpdateAlbumDetailsAsync(AlbumDetailsDto albumDetailsDto)
+		{
+			var result = await _albumRepository.UpdateAlbumDetailsAsync(albumDetailsDto);
+
+			if (result == null) return null;
+
+			return result.ToAlbumDetailsDto();
 		}
 	}
 }

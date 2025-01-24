@@ -33,5 +33,10 @@ namespace RecordStore.Infrastructure.Repositories
 				.Where(a => a.ArtistId == artistId)
 				.ToListAsync();
 		}
+
+		public async Task<Artist?> FetchArtistByNameAsync(string artistName)
+		{
+			return await _db.Artists.FirstOrDefaultAsync(a => a.Name == artistName);
+		}
 	}
 }

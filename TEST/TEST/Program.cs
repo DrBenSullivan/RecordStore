@@ -1,7 +1,7 @@
 using MudBlazor.Services;
-using RecordStore.FrontEnd.Components.Shared;
+using TEST.Components;
 
-namespace RecordStore.FrontEnd
+namespace TEST
 {
 	public class Program
 	{
@@ -9,15 +9,17 @@ namespace RecordStore.FrontEnd
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
+			// Add MudBlazor services
 			builder.Services.AddMudServices();
 
+			// Add services to the container.
 			builder.Services.AddRazorComponents()
 				.AddInteractiveServerComponents()
 				.AddInteractiveWebAssemblyComponents();
 
 			var app = builder.Build();
 
-
+			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseWebAssemblyDebugging();
@@ -25,10 +27,7 @@ namespace RecordStore.FrontEnd
 			else
 			{
 				app.UseExceptionHandler("/Error");
-				app.UseHsts();
 			}
-
-			app.UseHttpsRedirection();
 
 			app.UseAntiforgery();
 

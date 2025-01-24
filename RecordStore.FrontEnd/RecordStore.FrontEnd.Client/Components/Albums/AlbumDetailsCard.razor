@@ -2,30 +2,58 @@
 @inject ISnackbar Snackbar
 @inject NavigationManager Navigation
 
-<h3>Album Details</h3>
-
 <MudContainer>
     <MudPaper Class="pa-4">
         <MudForm @ref="_form">
-            <MudTextField T="string" Label="AlbumTitle" Required="true" RequiredError="Album Title is required!" @bind-Value="_album.Title"/>
-            <MudTextField T="string" Label="Artist" Required="true" RequiredError="Artist is required!" Value="Album.ArtistName" Disabled/>
-            <MudNumericField T="int?" Label="Year" @bind-Value="_album.ReleaseYear" />
-            <MudNumericField T="int" Label="Stock" Value="@Album.Stock" Disabled />
-            <MudTextField T="string" Label="Genre" Value="@Album.GenreName" Disabled />
+
+            <MudTextField T="string" 
+                Label="AlbumTitle"
+                @bind-Value="_album.Title" Disabled="@(!_isEditingActive)" 
+                Validation="_validateString" />
+
+            <MudTextField T="string" 
+                Label="Artist" 
+                @bind-Value="_album.ArtistName" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateString" />
+
+            <MudNumericField T="int" 
+                Label="Year" 
+                @bind-Value="_album.ReleaseYear" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateYear" />
+
+            <MudNumericField T="int" 
+                Label="Stock" 
+                @bind-Value="_album.Stock" 
+                Disabled="@(!_isEditingActive)" />
+
+            <MudTextField T="string" 
+                Label="Genre" 
+                @bind-Value="_album.GenreName" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateString"/>
+
         </MudForm>
     </MudPaper>
+
     <MudPaper Class="pa-4 mt-4">
-        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="HandleResetClick" Class="mx-2">Reset</MudButton>
-        <MudButton Variant="Variant.Filled" Color="Color.Secondary" DropShadow="false" OnClick="HandleSubmitClick" Class="mx-2">Submit</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Warning" DropShadow="false" OnClick="HandleEditClick" Class="mx-2" Disabled="@_isEditingActive">Edit</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" DropShadow="false" OnClick="HandleResetClick" Class="mx-2" Disabled="@(!_isEditingActive)">Reset</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" DropShadow="false" OnClick="HandleSubmitClick" Class="mx-2" Disabled="@(!_isEditingActive)">Submit</MudButton>
     </MudPaper>
+
 </MudContainer>
 
 @code {
     private MudForm _form = null!;
-    private PutAlbum _album = null!;
+    private bool _isEditingActive = false;
+    private AlbumDetails _album = null!;
 
+    private readonly JsonSerializerOptions _requestOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+    private readonly JsonSerializerOptions _responseOptions = new() { PropertyNameCaseInsensitive = true };
     [Parameter]
-    public AlbumDetails Album { get; set; } = new()
+    public AlbumDetails albumDetails { get; set; } = new()
     {
         Id = 1,
         Title = "Abbey Road",
@@ -37,26 +65,70 @@
         Stock = 100
     };
 
-    protected override void OnInitialized()
+    protected override void OnParametersSet()
     {
-        _album = new()
-        {
-            ArtistId = Album.ArtistId,
-            GenreId = Album.GenreId,
-            ReleaseYear = Album.ReleaseYear,
-            Title = Album.Title
-        };
         Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+        ResetAlbumDetails();
     }
 
-    private void HandleSubmitClick()
-    {        
-        var json = JsonSerializer.Serialize(_album);
-        Snackbar.Add($"Album updated:{Environment.NewLine}{json}", Severity.Success);
-    }
+    private void HandleEditClick() => _isEditingActive = true;
 
-    private void HandleResetClick()
+    private void HandleResetClick() => Navigation.NavigateTo("", true);
+
+    private async Task HandleSubmitClick()
     {
-        Navigation.NavigateTo("", true);
+        _isEditingActive = false;
+
+        if (!ThereArePropertiesToUpdate())
+        {
+            Snackbar.Add("No updated properties detected.", Severity.Info);
+            ResetAlbumDetails();
+            return;
+        }
+
+        Snackbar.Add("Please wait...", Severity.Info);
+
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
+        var response = await client.PutAsJsonAsync(new Uri("http://localhost:5034/api/albums/details"), _album, _requestOptions);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add(await response.Content.ReadAsStringAsync(), Severity.Error);
+            ResetAlbumDetails();
+            return;
+        }
+
+        var updatedDetails = await response.Content.ReadFromJsonAsync<AlbumDetails>(_responseOptions);
+
+        Snackbar.Add("Album successfully updated!", Severity.Success, null);
+
+        albumDetails = updatedDetails!;
+        ResetAlbumDetails();
     }
+
+    private bool ThereArePropertiesToUpdate()
+    {
+        return
+            (albumDetails.Title != _album.Title && !string.IsNullOrEmpty(_album.Title)) ||
+            (albumDetails.ArtistName != _album.ArtistName && !string.IsNullOrEmpty(_album.ArtistName)) ||
+            (albumDetails.ReleaseYear != _album.ReleaseYear && _album.ReleaseYear >= 1900 && _album.ReleaseYear <= 2025) ||
+            (albumDetails.GenreName != _album.GenreName && !string.IsNullOrEmpty(_album.GenreName)) ||
+            (albumDetails.Stock != _album.Stock);
+    }
+
+    private void ResetAlbumDetails()
+    {
+        _album = albumDetails.Clone();
+    }
+
+    private static Func<string, string?> _validateString = (string input) => 
+        string.IsNullOrEmpty(input) 
+            ? "This is a required field." 
+            : null;
+
+    private static Func<string, string?> _validateYear = (string s) => 
+        string.IsNullOrEmpty(s) 
+            ? "Year must be between 1900 and 2025" 
+            : null;
 }

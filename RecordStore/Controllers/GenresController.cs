@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using RecordStore.Core.Interfaces.ServiceInterfaces;
 
 namespace RecordStore.Api.Controllers
 {
 	[ApiController]
+	[EnableCors("AllowLocalhost")]
 	[Route("api/[controller]")]
 	public class GenresController : ControllerBase
 	{

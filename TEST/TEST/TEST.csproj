@@ -4,18 +4,12 @@
     <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-	<GenerateRuntimeConfigurations>true</GenerateRuntimeConfigurations>
   </PropertyGroup>
 
 
   <ItemGroup>
+    <ProjectReference Include="..\TEST.Client\TEST.Client.csproj" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="9.*" />
-  </ItemGroup>
-
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\RecordStore.Shared\RecordStore.Shared.csproj" />
-    <ProjectReference Include="..\RecordStore.FrontEnd.Client\RecordStore.FrontEnd.Client.csproj" />
   </ItemGroup>
 
 </Project>

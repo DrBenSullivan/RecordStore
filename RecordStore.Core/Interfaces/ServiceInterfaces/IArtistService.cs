@@ -7,5 +7,6 @@ namespace RecordStore.Core.Interfaces.ServiceInterfaces
 		Task<ArtistAlbumsResponseDto?> FindAlbumsByArtistIdAsync(int artistId);
 		Task<List<ArtistResponseDto>> FindAllArtistsAsync();
 		Task<ArtistResponseDto?> FindArtistByIdAsync(int id);
+		Task<ArtistResponseDto?> FindArtistByNameAsync(string artistName);
 	}
 }

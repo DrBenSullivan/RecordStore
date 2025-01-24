@@ -17,5 +17,20 @@ namespace RecordStore.Application.Extensions
 				StockQuantity = album.Stock?.Quantity ?? 0
 			};
 		}
+
+		public static AlbumDetailsDto ToAlbumDetailsDto(this Album album)
+		{
+			return new AlbumDetailsDto
+			{
+				Id = album.Id,
+				Title = album.Title,
+				ArtistId = album.Artist!.Id,
+				ArtistName = album.Artist!.Name,
+				GenreId = album.Genre!.Id,
+				GenreName = album.Genre!.Name,
+				ReleaseYear = album.ReleaseYear,
+				Stock = album.Stock!.Quantity
+			};
+		}
 	}
 }

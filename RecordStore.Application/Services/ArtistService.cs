@@ -40,5 +40,14 @@ namespace RecordStore.Application.Services
 
 			return artist.ToArtistAlbumsResponseDto(artistAlbums);
 		}
+
+		public async Task<ArtistResponseDto?> FindArtistByNameAsync(string artistName)
+		{
+			var artist = await _artistRepository.FetchArtistByNameAsync(artistName);
+
+			if (artist == null) return null;
+
+			return artist.ToArtistResponseDto();
+		}
 	}
 }
