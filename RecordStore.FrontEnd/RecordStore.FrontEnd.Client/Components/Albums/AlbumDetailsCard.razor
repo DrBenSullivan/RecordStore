@@ -7,32 +7,33 @@
         <MudForm @ref="_form">
 
             <MudTextField T="string" 
-                Label="AlbumTitle"
-                @bind-Value="_album.Title" Disabled="@(!_isEditingActive)" 
-                Validation="_validateString" />
+            Label="AlbumTitle"
+            @bind-Value="_album.Title" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateString" />
 
             <MudTextField T="string" 
-                Label="Artist" 
-                @bind-Value="_album.ArtistName" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateString" />
+            Label="Artist" 
+            @bind-Value="_album.ArtistName" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateString" />
 
             <MudNumericField T="int" 
-                Label="Year" 
-                @bind-Value="_album.ReleaseYear" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateYear" />
+            Label="Year" 
+            @bind-Value="_album.ReleaseYear" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateYear" />
 
             <MudNumericField T="int" 
-                Label="Stock" 
-                @bind-Value="_album.Stock" 
-                Disabled="@(!_isEditingActive)" />
+            Label="Stock" 
+            @bind-Value="_album.Stock" 
+            Disabled="@(!_isEditingActive)" />
 
             <MudTextField T="string" 
-                Label="Genre" 
-                @bind-Value="_album.GenreName" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateString"/>
+            Label="Genre" 
+            @bind-Value="_album.GenreName" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateString"/>
 
         </MudForm>
     </MudPaper>
@@ -46,28 +47,18 @@
 </MudContainer>
 
 @code {
-    private MudForm _form = null!;
+    private MudForm _form  = null!;
     private bool _isEditingActive = false;
     private AlbumDetails _album = null!;
 
     private readonly JsonSerializerOptions _requestOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
     private readonly JsonSerializerOptions _responseOptions = new() { PropertyNameCaseInsensitive = true };
+
     [Parameter]
-    public AlbumDetails albumDetails { get; set; } = new()
-    {
-        Id = 1,
-        Title = "Abbey Road",
-        ArtistId = 1,
-        ArtistName = "The Beatles",
-        ReleaseYear = 1969,
-        GenreId = 1,
-        GenreName = "Rock",
-        Stock = 100
-    };
+    public required AlbumDetails AlbumDetails { get; set; }
 
     protected override void OnParametersSet()
     {
-        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
         ResetAlbumDetails();
     }
 
@@ -103,23 +94,23 @@
 
         Snackbar.Add("Album successfully updated!", Severity.Success, null);
 
-        albumDetails = updatedDetails!;
+        AlbumDetails = updatedDetails!;
         ResetAlbumDetails();
     }
 
     private bool ThereArePropertiesToUpdate()
     {
         return
-            (albumDetails.Title != _album.Title && !string.IsNullOrEmpty(_album.Title)) ||
-            (albumDetails.ArtistName != _album.ArtistName && !string.IsNullOrEmpty(_album.ArtistName)) ||
-            (albumDetails.ReleaseYear != _album.ReleaseYear && _album.ReleaseYear >= 1900 && _album.ReleaseYear <= 2025) ||
-            (albumDetails.GenreName != _album.GenreName && !string.IsNullOrEmpty(_album.GenreName)) ||
-            (albumDetails.Stock != _album.Stock);
+            (AlbumDetails.Title != _album.Title && !string.IsNullOrEmpty(_album.Title)) ||
+            (AlbumDetails.ArtistName != _album.ArtistName && !string.IsNullOrEmpty(_album.ArtistName)) ||
+            (AlbumDetails.ReleaseYear != _album.ReleaseYear && _album.ReleaseYear >= 1900 && _album.ReleaseYear <= 2025) ||
+            (AlbumDetails.GenreName != _album.GenreName && !string.IsNullOrEmpty(_album.GenreName)) ||
+            (AlbumDetails.Stock != _album.Stock);
     }
 
     private void ResetAlbumDetails()
     {
-        _album = albumDetails.Clone();
+        _album = AlbumDetails.Clone();
     }
 
     private static Func<string, string?> _validateString = (string input) => 
@@ -127,8 +118,8 @@
             ? "This is a required field." 
             : null;
 
-    private static Func<string, string?> _validateYear = (string s) => 
-        string.IsNullOrEmpty(s) 
+    private static Func<int, string?> _validateYear = (int year) => 
+        year < 1900 || year > 2025
             ? "Year must be between 1900 and 2025" 
             : null;
 }
