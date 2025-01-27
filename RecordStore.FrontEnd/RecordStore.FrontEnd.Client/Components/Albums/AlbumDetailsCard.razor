@@ -7,33 +7,33 @@
         <MudForm @ref="_form">
 
             <MudTextField T="string" 
-            Label="AlbumTitle"
-            @bind-Value="_album.Title" 
-            Disabled="@(!_isEditingActive)" 
-            Validation="_validateString" />
+                Label="AlbumTitle"
+                @bind-Value="_album.Title" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateString" />
 
             <MudTextField T="string" 
-            Label="Artist" 
-            @bind-Value="_album.ArtistName" 
-            Disabled="@(!_isEditingActive)" 
-            Validation="_validateString" />
+                Label="Artist" 
+                @bind-Value="_album.ArtistName" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateString" />
 
             <MudNumericField T="int" 
-            Label="Year" 
-            @bind-Value="_album.ReleaseYear" 
-            Disabled="@(!_isEditingActive)" 
-            Validation="_validateYear" />
+                Label="Year" 
+                @bind-Value="_album.ReleaseYear" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateYear" />
 
             <MudNumericField T="int" 
-            Label="Stock" 
-            @bind-Value="_album.Stock" 
-            Disabled="@(!_isEditingActive)" />
+                Label="Stock" 
+                @bind-Value="_album.Stock" 
+                Disabled="@(!_isEditingActive)" />
 
             <MudTextField T="string" 
-            Label="Genre" 
-            @bind-Value="_album.GenreName" 
-            Disabled="@(!_isEditingActive)" 
-            Validation="_validateString"/>
+                Label="Genre" 
+                @bind-Value="_album.GenreName" 
+                Disabled="@(!_isEditingActive)" 
+                Validation="_validateString"/>
 
         </MudForm>
     </MudPaper>

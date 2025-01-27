@@ -2,7 +2,10 @@
 
 @code {
 	[Parameter]
-	public List<Genre>? Genres { get; set; } = [];
+	public List<Genre>? Genres { get; set; } = null;
+
+	[Parameter]
+	public EventCallback<List<Genre>?> GenresChanged { get; set; }
 
 	private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
 
@@ -16,5 +19,7 @@
 		{
 			Genres = await JsonSerializer.DeserializeAsync<List<Genre>>(response.Content.ReadAsStream(), _options);
 		}
+
+		await GenresChanged.InvokeAsync(Genres);
 	}
 }

@@ -30,6 +30,8 @@ namespace RecordStore.Infrastructure.Repositories
 		{
 			await _db.Albums.AddAsync(album);
 			await _db.SaveChangesAsync();
+			await _db.AlbumStock.AddAsync(new AlbumStock { AlbumId = album.Id, Quantity = 0 });
+			await _db.SaveChangesAsync();
 
 			return await GetAlbumsWithIncludedRelations()
 				.FirstOrDefaultAsync(a => a.Id == album.Id);
