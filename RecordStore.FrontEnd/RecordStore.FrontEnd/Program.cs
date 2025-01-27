@@ -28,6 +28,8 @@ namespace RecordStore.FrontEnd
 				app.UseHsts();
 			}
 
+			app.UseStatusCodePagesWithRedirects("/Error/{0}");
+
 			app.UseHttpsRedirection();
 
 			app.UseAntiforgery();

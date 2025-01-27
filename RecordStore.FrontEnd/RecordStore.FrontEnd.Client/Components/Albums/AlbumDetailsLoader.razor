@@ -1,12 +1,13 @@
 ﻿@using System.Text.Json
 
-<MudContainer Class="d-flex justify-space-evenly my-auto" Style="min-height: auto;">
+<MudContainer Class="d-flex 
+justify-space-evenly pt-4 pb-auto mud-height-full">
 
 	@if (!_isClientError)
 	{
 		@if (_albumDetails == null)
 		{
-			<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Class="ma-auto c" />
+			<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Class="ma-auto" />
 		}
 		else
 		{
@@ -16,7 +17,7 @@
 
 	else
 	{
-		<MudText Typo="Typo.h5" Align="Align.Center">There was an error while getting the album data.<br /><br />{_errorMessage}<br /><br />Please try again later...</MudText>
+		<MudText Typo="Typo.h5" Align="Align.Center">There was an error while getting the album data.<br /><br />@_errorMessage<br /><br />Please try again later...</MudText>
 	}
 
 </MudContainer>

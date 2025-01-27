@@ -1,14 +1,41 @@
-﻿<MudCard Class="ma-2 pa-2" Style="width: fit-content">
+﻿@inject NavigationManager Navigation
 
-	<MudCardContent>
-		<MudText Typo="Typo.h5">@AlbumData.AlbumTitle</MudText>
-		<br />
-		<MudText Typo="Typo.body2"><em>@AlbumData.Artist (@AlbumData.ReleaseYear)</em></MudText>
-	</MudCardContent>
+<MudCard Class="ma-2 pa-2" Style="width: fit-content">
+
+	<MudLink Href=@_link>
+		<MudCardContent @onmouseover="HandleMouseOver" @onmouseout="HandleMouseOut" @onclick="HandleClick">
+			<MudText Typo="Typo.h5" @bind-Style="_style">@AlbumData.AlbumTitle</MudText>
+			<br />
+			<MudText Typo="Typo.body2">@AlbumData.Artist (@AlbumData.ReleaseYear)</MudText>
+		</MudCardContent>
+	</MudLink>
 
 </MudCard>
 
 @code {
+	private string _style = string.Empty;
+	private string _link = string.Empty;
+
 	[Parameter]
 	public Album AlbumData { get; set; } = null!;
+
+	protected override void OnParametersSet()
+	{
+		_link = $"/albums/{AlbumData.AlbumId}";
+	}
+
+	public void HandleMouseOver(MouseEventArgs eventArgs)
+	{
+		_style = "font-style: italic; font-decoration: underline;";
+	}
+
+	public void HandleMouseOut(MouseEventArgs eventArgs)
+	{
+		_style = string.Empty;
+	}
+
+	public void HandleClick(MouseEventArgs eventArgs)
+	{
+		Navigation.NavigateTo($"albums/{AlbumData.AlbumId}");
+	}
 }

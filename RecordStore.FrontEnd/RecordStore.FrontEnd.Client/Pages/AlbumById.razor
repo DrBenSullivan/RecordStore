@@ -1,0 +1,12 @@
+﻿@page "/albums/{AlbumId:int}"
+
+<PageTitle>Record Store - Album Details</PageTitle>
+
+<MudText Typo="Typo.h3" GutterBottom="true">Album Details</MudText>
+
+<AlbumDetailsLoader AlbumId="AlbumId" />
+
+@code {
+	[Parameter]
+	public int AlbumId { get; set; }	
+}

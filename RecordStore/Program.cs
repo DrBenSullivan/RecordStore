@@ -52,6 +52,7 @@ namespace RecordStore.Api
 				app.UseCors("AllowLocalHost");
 			}
 
+			app.UseStatusCodePagesWithRedirects("/Error/{0}");
 
 			app.UseAuthorization();
 
