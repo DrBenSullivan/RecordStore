@@ -1,3 +1,4 @@
+using MudBlazor;
 using MudBlazor.Services;
 using RecordStore.FrontEnd.Components.Shared;
 
@@ -9,7 +10,10 @@ namespace RecordStore.FrontEnd
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-			builder.Services.AddMudServices();
+			builder.Services.AddMudServices(config =>
+			{
+				config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+			});
 
 			builder.Services.AddRazorComponents()
 				.AddInteractiveServerComponents()

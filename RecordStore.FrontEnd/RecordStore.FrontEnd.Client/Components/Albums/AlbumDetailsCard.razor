@@ -1,5 +1,7 @@
 ﻿@using System.Text.Json
+
 @inject ISnackbar Snackbar
+@inject IDialogService Dialog
 @inject NavigationManager Navigation
 
 <MudContainer>
@@ -7,52 +9,69 @@
         <MudForm @ref="_form">
 
             <MudTextField T="string" 
-                Label="AlbumTitle"
-                @bind-Value="_album.Title" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateString" />
+            Label="AlbumTitle"
+            @bind-Value="_album.Title" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateString" />
 
             <MudTextField T="string" 
-                Label="Artist" 
-                @bind-Value="_album.ArtistName" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateString" />
+            Label="Artist" 
+            @bind-Value="_album.ArtistName" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateString" />
 
             <MudNumericField T="int" 
-                Label="Year" 
-                @bind-Value="_album.ReleaseYear" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateYear" />
+            Label="Year" 
+            @bind-Value="_album.ReleaseYear" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateYear" />
 
             <MudNumericField T="int" 
-                Label="Stock" 
-                @bind-Value="_album.Stock" 
-                Disabled="@(!_isEditingActive)" />
+            Label="Stock" 
+            @bind-Value="_album.Stock" 
+            Disabled="@(!_isEditingActive)" />
 
             <MudTextField T="string" 
-                Label="Genre" 
-                @bind-Value="_album.GenreName" 
-                Disabled="@(!_isEditingActive)" 
-                Validation="_validateString"/>
+            Label="Genre" 
+            @bind-Value="_album.GenreName" 
+            Disabled="@(!_isEditingActive)" 
+            Validation="_validateString"/>
 
         </MudForm>
     </MudPaper>
 
-    <MudPaper Class="pa-4 mt-4">
+    <MudPaper Class="pa-4 mt-4 d-flex justify-start gap-4">
         <MudButton Variant="Variant.Filled" Color="Color.Warning" DropShadow="false" OnClick="HandleEditClick" Class="mx-2" Disabled="@_isEditingActive">Edit</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Success" DropShadow="false" OnClick="HandleResetClick" Class="mx-2" Disabled="@(!_isEditingActive)">Reset</MudButton>
         <MudButton Variant="Variant.Filled" Color="Color.Error" DropShadow="false" OnClick="HandleSubmitClick" Class="mx-2" Disabled="@(!_isEditingActive)">Submit</MudButton>
+        <MudButton Variant="Variant.Outlined" Color="Color.Surface" DropShadow="true" OnClick="HandleDeleteClick" EndIcon="@Icons.Material.Outlined.DeleteOutline" Class="ml-auto mx-2" Disabled="@(!_isEditingActive)">Delete</MudButton>
     </MudPaper>
 
 </MudContainer>
+
+
+<MudDialog @bind-Visible=_isDialogOpen>
+    <TitleContent>
+        Delete @_album.Title?
+    </TitleContent>
+    <DialogContent>
+        Are you sure you want to delete @_album.Title?
+        <br />
+        This action cannot be undone.
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Error" OnClick="DeleteAlbumAsync">Yes, Delete Forever</MudButton>
+        <MudButton Color="Color.Success" OnClick="HandleCloseDialog">No, Exit</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @code {
     private MudForm _form  = null!;
     private bool _isEditingActive = false;
     private AlbumDetails _album = null!;
+    private bool _isDialogOpen = false;
 
-    private readonly JsonSerializerOptions _requestOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
-    private readonly JsonSerializerOptions _responseOptions = new() { PropertyNameCaseInsensitive = true };
+    private readonly JsonSerializerOptions _options = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, PropertyNameCaseInsensitive = true };
 
     [Parameter]
     public required AlbumDetails AlbumDetails { get; set; }
@@ -81,7 +100,7 @@
 
         using var client = new HttpClient();
         client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
-        var response = await client.PutAsJsonAsync(new Uri("http://localhost:5034/api/albums/details"), _album, _requestOptions);
+        var response = await client.PutAsJsonAsync(new Uri("http://localhost:5034/api/albums/details"), _album, _options);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -90,7 +109,7 @@
             return;
         }
 
-        var updatedDetails = await response.Content.ReadFromJsonAsync<AlbumDetails>(_responseOptions);
+        var updatedDetails = await response.Content.ReadFromJsonAsync<AlbumDetails>(_options);
 
         Snackbar.Add("Album successfully updated!", Severity.Success, null);
 
@@ -122,4 +141,31 @@
         year < 1900 || year > 2025
             ? "Year must be between 1900 and 2025" 
             : null;
+
+    private void HandleDeleteClick()
+    {
+        _isDialogOpen = true;
+    }
+
+    private void HandleCloseDialog()
+    {
+        _isDialogOpen = false;
+    }
+
+    private async Task DeleteAlbumAsync()
+    {
+        using var client = new HttpClient();
+        client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
+        var response = await client.DeleteAsync(new Uri($"http://localhost:5034/api/albums/{_album.Id}"));
+
+        if (!response.IsSuccessStatusCode)
+        {
+            Snackbar.Add(await response.Content.ReadAsStringAsync(), Severity.Warning);
+            ResetAlbumDetails();
+            return;
+        }
+
+        Snackbar.Add($"{_album.Title} successfully deleted!", Severity.Error, null);
+        Navigation.NavigateTo("/albums");
+    }
 }

@@ -57,6 +57,8 @@ namespace RecordStore.Infrastructure.Repositories
 
 			if (existingAlbum == null) return -1;
 
+			var existingStock = await _db.AlbumStock.FindAsync(id);
+			_db.AlbumStock.Remove(existingStock!);
 			_db.Albums.Remove(existingAlbum);
 
 			return await _db.SaveChangesAsync();

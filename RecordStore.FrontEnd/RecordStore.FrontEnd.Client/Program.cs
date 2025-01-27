@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor;
 using MudBlazor.Services;
 
 namespace RecordStore.FrontEnd.Client
@@ -9,7 +10,10 @@ namespace RecordStore.FrontEnd.Client
 		{
 			var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-			builder.Services.AddMudServices();
+			builder.Services.AddMudServices(config =>
+			{
+				config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomRight;
+			});
 
 			await builder.Build().RunAsync();
 		}
