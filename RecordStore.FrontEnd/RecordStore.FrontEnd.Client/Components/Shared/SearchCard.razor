@@ -1,0 +1,102 @@
+﻿@using System.Text.Json
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+
+<MudContainer Class="d-flex justify-space-evenly ma-auto">
+
+	@if (_albums.Count == 0)
+	{
+		<MudPaper Width="100%" Class="pa-4">
+
+				<MudForm @ref="_form" Spacing="2" Class="mud-width-full">
+
+					<MudText Align="Align.Center">Album Search</MudText>
+
+					<MudTextField Label="Album Name" Clearable="true" @bind-Value="_textSearch" />
+
+					@if (_genres != null && _genres.Any())
+					{
+						<MudSelect Label="Album Genre" Clearable="true" @bind-Value="_genreId">
+							@foreach (var genre in _genres)
+							{
+								<MudSelectItem T="int?" Value="@genre.GenreId">@genre.GenreName</MudSelectItem>
+							}
+						</MudSelect>
+					}
+
+					<MudNumericField T="int?"
+					@bind-Value="_filterYear"
+					Clearable="true"
+					Label="Release Year" 
+					Validation="_validateYear"/>
+
+					<MudCheckBox Label="In Stock" @bind-Value="_inStockOnly" />
+
+					<MudButton Variant="Variant.Outlined" EndIcon="@Icons.Material.Filled.Search" Color="Color.Info" DropShadow="false" OnClick="HandleSearchClick" Class="mx-2">Search</MudButton>
+
+				</MudForm>
+		</MudPaper>
+	}
+	else
+	{
+		<AlbumCardList AlbumsList="_albums" />
+	}
+
+</MudContainer>
+
+<GenresLoader @bind-Genres="_genres" />
+
+@code {
+	private MudForm _form = null!;
+
+	private string? _textSearch = null;
+	private bool _inStockOnly = false;
+	private int? _filterYear = null;
+	private List<Genre>? _genres = null;
+	private int? _genreId = null;
+
+	private List<Album> _albums = [];
+
+	private JsonSerializerOptions _jsonOptions = new() { PropertyNameCaseInsensitive = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+
+	private static Func<int, string?> _validateYear = (int year) =>
+		year < 1900 || year > 2025
+			? "Release year must be between 1900 and 2025"
+			: null;
+
+	private async Task HandleSearchClick()
+	{
+		if (NoSearchFilters()) Navigation.NavigateTo("/albums");
+
+		List<string> queryStrings = [];
+
+		if (!string.IsNullOrEmpty(_textSearch)) queryStrings.Add($"albumTitle={_textSearch}");
+
+		if (_inStockOnly) queryStrings.Add("inStock=true");
+
+		if (_filterYear != null) queryStrings.Add($"releaseYear={_filterYear}");
+
+		if (_genreId != null) queryStrings.Add($"genreId={_genreId}");
+
+		var query = "?" + string.Join('&', queryStrings);
+		using var client = new HttpClient();
+		client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
+		var response = await client.GetAsync(new Uri($"http://localhost:5034/api/albums{query}"));
+
+		if (!response.IsSuccessStatusCode)
+		{
+			Snackbar.Add(await response.Content.ReadAsStringAsync(), Severity.Error);
+			Navigation.NavigateTo("/albums");
+			return;
+		}
+
+		_albums = await JsonSerializer.DeserializeAsync<List<Album>>(response.Content.ReadAsStream(), _jsonOptions);
+
+		if (_albums.Count == 0)
+		{
+			Snackbar.Add("No albums match the search criteria. Please try again.", Severity.Info);
+		}
+	}
+
+	private bool NoSearchFilters() => string.IsNullOrEmpty(_textSearch) && !_inStockOnly && _filterYear == null && _genreId == null;
+}
