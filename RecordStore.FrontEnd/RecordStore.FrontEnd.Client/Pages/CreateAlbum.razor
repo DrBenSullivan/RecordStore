@@ -1,0 +1,133 @@
+﻿@* @page "/albums/add" *@
+
+@* @inject ISnackbar Snackbar *@
+@* @inject NavigationManager Navigation *@
+
+@* @using System.Text.Json *@
+
+@* <PageTitle>Record Store - Add Album</PageTitle> *@
+
+@* <MudText Typo="Typo.h3" GutterBottom="true">Add Albums</MudText> *@
+
+@* <MudContainer> *@
+@*     <MudPaper Class="pa-4"> *@
+@*         <MudForm @ref="_form"> *@
+
+@*             <MudTextField T="string" *@
+@*             Label="AlbumTitle" *@
+@*             @bind-Value="_albumDetails.Title" *@
+@*             Validation="_validateString" /> *@
+
+@*             <MudTextField T="string" *@
+@*             Label="Artist" *@
+@*             @bind-Value="_artistName" *@
+@*             Validation="_validateString" /> *@
+
+@*             <MudNumericField T="int" *@
+@*             Label="Year" *@
+@*             @bind-Value="_albumDetails.ReleaseYear" *@
+@*             Validation="_validateYear" /> *@
+
+@*             <MudNumericField T="int" *@
+@*             Label="Stock" *@
+@*             @bind-Value="_albumDetails.Stock" /> *@
+
+@*             <MudTextField T="string" *@
+@*             Label="Genre" *@
+@*             @bind-Value="_albumDetails.GenreName" *@
+@*             Validation="_validateString" /> *@
+
+@*         </MudForm> *@
+@*     </MudPaper> *@
+
+@*     <MudPaper Class="pa-4 mt-4"> *@
+@*         <MudButton Variant="Variant.Filled" Color="Color.Success" DropShadow="false" OnClick="HandleResetClick" Class="mx-2" >Reset</MudButton> *@
+@*         <MudButton Variant="Variant.Filled" Color="Color.Error" DropShadow="false" OnClick="HandleSubmitClick" Class="mx-2" Disabled="@(!_isEditingActive)">Submit</MudButton> *@
+@*     </MudPaper> *@
+
+@* </MudContainer> *@
+
+@* @code { *@
+@*     private MudForm _form = null!; *@
+@*     private PostAlbum _albumDetails = new(); *@
+@*     private string? _artistName = null; *@
+@*     private List<Genre> _genres = []; *@
+
+@*     private readonly JsonSerializerOptions _requestOptions = new() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }; *@
+@*     private readonly JsonSerializerOptions _responseOptions = new() { PropertyNameCaseInsensitive = true }; *@
+
+@*     [Parameter] *@
+@*     public required AlbumDetails AlbumDetails { get; set; } *@
+
+@*     protected override Task OnInitializedAsync() *@
+@*     { *@
+@*         using var client = new HttpClient(); *@
+
+@*     } *@
+
+@*     protected override void OnParametersSet() *@
+@*     { *@
+@*         ResetAlbumDetails(); *@
+@*     } *@
+
+@*     private void HandleEditClick() => _isEditingActive = true; *@
+
+@*     private void HandleResetClick() => Navigation.NavigateTo("", true); *@
+
+@*     private async Task HandleSubmitClick() *@
+@*     { *@
+@*         _isEditingActive = false; *@
+
+@*         if (!ThereArePropertiesToUpdate()) *@
+@*         { *@
+@*             Snackbar.Add("No updated properties detected.", Severity.Info); *@
+@*             ResetAlbumDetails(); *@
+@*             return; *@
+@*         } *@
+
+@*         Snackbar.Add("Please wait...", Severity.Info); *@
+
+@*         using var client = new HttpClient(); *@
+@*         client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191"); *@
+@*         var response = await client.PutAsJsonAsync(new Uri("http://localhost:5034/api/albums/details"), _album, _requestOptions); *@
+
+@*         if (!response.IsSuccessStatusCode) *@
+@*         { *@
+@*             Snackbar.Add(await response.Content.ReadAsStringAsync(), Severity.Error); *@
+@*             ResetAlbumDetails(); *@
+@*             return; *@
+@*         } *@
+
+@*         var updatedDetails = await response.Content.ReadFromJsonAsync<AlbumDetails>(_responseOptions); *@
+
+@*         Snackbar.Add("Album successfully updated!", Severity.Success, null); *@
+
+@*         AlbumDetails = updatedDetails!; *@
+@*         ResetAlbumDetails(); *@
+@*     } *@
+
+@*     private bool ThereArePropertiesToUpdate() *@
+@*     { *@
+@*         return *@
+@*             (AlbumDetails.Title != _album.Title && !string.IsNullOrEmpty(_album.Title)) || *@
+@*             (AlbumDetails.ArtistName != _album.ArtistName && !string.IsNullOrEmpty(_album.ArtistName)) || *@
+@*             (AlbumDetails.ReleaseYear != _album.ReleaseYear && _album.ReleaseYear >= 1900 && _album.ReleaseYear <= 2025) || *@
+@*             (AlbumDetails.GenreName != _album.GenreName && !string.IsNullOrEmpty(_album.GenreName)) || *@
+@*             (AlbumDetails.Stock != _album.Stock); *@
+@*     } *@
+
+@*     private void ResetAlbumDetails() *@
+@*     { *@
+@*         _album = AlbumDetails.Clone(); *@
+@*     } *@
+
+@*     private static Func<string, string?> _validateString = (string input) => *@
+@*         string.IsNullOrEmpty(input) *@
+@*             ? "This is a required field." *@
+@*             : null; *@
+
+@*     private static Func<int, string?> _validateYear = (int year) => *@
+@*         year < 1900 || year > 2025 *@
+@*             ? "Year must be between 1900 and 2025" *@
+@*             : null; *@
+@* } *@

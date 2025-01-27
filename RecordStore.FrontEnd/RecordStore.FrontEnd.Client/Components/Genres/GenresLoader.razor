@@ -1,0 +1,20 @@
+﻿@using System.Text.Json
+
+@code {
+	[Parameter]
+	public List<Genre>? Genres { get; set; } = [];
+
+	private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true };
+
+	protected override async Task OnInitializedAsync()
+	{
+		using var client = new HttpClient();
+		client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
+		var response = await client.GetAsync(new Uri($"http://localhost:5034/api/genres"));
+
+		if (response.IsSuccessStatusCode)
+		{
+			Genres = await JsonSerializer.DeserializeAsync<List<Genre>>(response.Content.ReadAsStream(), _options);
+		}
+	}
+}
