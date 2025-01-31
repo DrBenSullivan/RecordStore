@@ -114,11 +114,12 @@ The `GET /api/albums` endpoint supports optional query parameters to filter the 
 
 #### Query Parameters:
 
-| Parameter    | Type    | Description                                                                   |
-|--------------|---------|-------------------------------------------------------------------------------|
-| `inStock`    | `bool`  | Filter albums by stock availability (`true` for in-stock, `false` otherwise). |
-| `releaseYear`| `int`   | Filter albums by their release year.                                          |
-| `genreId`    | `int`   | Filter albums by their genre ID.                                              |
+| Parameter     | Type     | Description                                                                   |
+|---------------|----------|-------------------------------------------------------------------------------|
+| `inStock`     | `bool`   | Filter albums by stock availability (`true` for in-stock, `false` otherwise). |
+| `releaseYear` | `int`    | Filter albums by their release year.                                          |
+| `genreId`     | `int`    | Filter albums by their genre ID.                                              |
+| `albumTitle`  | `string` | Filter albums by album name.                                                  |
 
 #### Usage:
 
@@ -184,14 +185,11 @@ This project is licensed under the [MIT License](./LICENSE.txt).
 
 ## To-Do
 
-1. **Error Handling**:
-   - Implement comprehensive error responses (e.g., 404 for missing records, 400 for invalid input)
-2. **Get Album by Title**:
-   - Add further filtering query parameter to endpoint `/api/albums` to retrieve albums with a given title
-3. **Search Albums by Title**:
-   - Add a query parameter `/api/albums?title=Abbey%20Road`.
-4. **Swagger Documentation**:
+1. **Swagger Documentation**:
    - Add XML documentation for Swagger UI
-5. **Improve Unit Test Coverage & Integration Tests**
+2. **Improve Unit Test Coverage & Integration Tests**
    - Cover all endpoints with unit tests
    - Implement integration tests
+3. **Add User Interface**
+   - Add Blazor front end
+   - Integrate with back end
