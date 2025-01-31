@@ -1,0 +1,55 @@
+﻿@using System.Text.Json
+
+<MudContainer Class="d-flex justify-space-evenly" Fixed="true">
+
+	@if (!_isClientError)
+	{
+		@if (_artists == null)
+		{
+			<MudProgressCircular Color="Color.Primary" Size="Size.Large" Indeterminate="true" Class="ma-auto" />
+		}
+		else
+		{
+			<ArtistCardList Artists="_artists" />
+		}
+	}
+
+	else
+	{
+		<MudText Typo="Typo.h5" Align="Align.Center">There was an error while getting the album data.<br /><br />@_errorMessage<br /><br />Please try again later...</MudText>
+	}
+
+</MudContainer>
+
+@code {
+	private readonly JsonSerializerOptions _options = new() { PropertyNameCaseInsensitive = true, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+	private List<Artist> _artists { get; set; } = null!;
+	private bool _isClientError = false;
+	private string _errorMessage = string.Empty;
+
+	protected override async Task OnParametersSetAsync()
+	{
+		using var client = new HttpClient();
+		client.DefaultRequestHeaders.Add("Access-Control-Allow-Origin", "http://localhost:5191");
+		var response = await client.GetAsync(new Uri($"http://localhost:5034/api/artists"));
+		var jsonResponse = await response.Content.ReadAsStringAsync();
+
+		if (!response.IsSuccessStatusCode)
+		{
+			_isClientError = true;
+			_errorMessage = jsonResponse;
+			return;
+		}
+
+		var result = JsonSerializer.Deserialize<List<Artist>>(jsonResponse, _options);
+
+		if (result == null)
+		{
+			_isClientError = true;
+			_errorMessage = jsonResponse;
+			return;
+		}
+
+		_artists = result;
+	}
+}

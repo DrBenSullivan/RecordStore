@@ -1,0 +1,15 @@
+﻿<MudGrid>
+
+	@foreach (var artist in Artists)
+	{
+		<MudItem>
+			
+		</MudItem>
+	}
+
+</MudGrid>
+
+@code {
+	[Parameter]
+	public List<Artist> Artists { get; set; } = [];
+}

@@ -5,7 +5,7 @@
 <MudDialogProvider />
 <MudSnackbarProvider />
 
-<MudContainer Class="mud-width-full">
+<MudContainer Class="mud-width-full mud-height-full" Fixed="true" Style="height: 100%;">
     <MudLayout Class="mud-width-full">
 
         <MudAppBar Elevation="1">
@@ -20,7 +20,7 @@
         </MudDrawer>
 
         <MudMainContent Class="mt-16 pl-4 pt-4 pr-4 pb-0 mb-0 d-flex flex-nowrap flex-column justify-space-between xp">
-            <MudContainer Style="max-height: 100%" Class="mud-height-full">
+            <MudContainer Fixed="true" MaxWidth="MaxWidth.Medium" Style="height: 100%;">
                 @Body
             </MudContainer>
 
